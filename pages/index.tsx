@@ -22,18 +22,7 @@ const Home: NextPage<StaticProps> = ({ products }) => {
   );
 };
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  return {
-    paths: [],
-    fallback: "blocking",
-  };
-};
-
-export const getStaticProps: GetStaticProps = async ({ params }) => {
-  if (!(params && params.product)) {
-    return { notFound: true };
-  }
-
+export const getStaticProps: GetStaticProps = async () => {
   // Fetch data from DB.
 
   return {
