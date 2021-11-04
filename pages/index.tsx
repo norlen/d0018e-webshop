@@ -4,6 +4,8 @@ import Head from "next/head";
 import type { NextPage } from "next";
 import type { Product } from "@lib/types";
 
+import { getProductsAll } from "@lib/db";
+
 type StaticProps = {
   products: Product[];
 };
