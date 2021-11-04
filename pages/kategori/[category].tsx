@@ -1,14 +1,15 @@
 import { GetStaticProps, GetStaticPaths } from "next";
 import Head from "next/head";
-import type { NextPage } from "next";
 
-import Layout from "@components/layout/store";
+import type { NextPage } from "next";
+import type { Product } from "@lib/types";
 
 type StaticProps = {
   category: string;
+  products: Product[];
 };
 
-const Category: NextPage<StaticProps> = ({ category }) => {
+const Category: NextPage<StaticProps> = ({ category, products }) => {
   return (
     <>
       <Head>
@@ -17,7 +18,7 @@ const Category: NextPage<StaticProps> = ({ category }) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <Layout>Kategori: {category}</Layout>
+      <div>Kategori: {category}</div>
     </>
   );
 };

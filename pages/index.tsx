@@ -1,9 +1,14 @@
+import { GetStaticProps, GetStaticPaths } from "next";
 import Head from "next/head";
+
 import type { NextPage } from "next";
+import type { Product } from "@lib/types";
 
-import Layout from "@components/layout/store";
+type StaticProps = {
+  products: Product[];
+};
 
-const Home: NextPage = () => {
+const Home: NextPage<StaticProps> = ({ products }) => {
   return (
     <>
       <Head>
@@ -12,9 +17,29 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <Layout></Layout>
+      <div>{/* ALL PRODUCTS GO HERE */}</div>
     </>
   );
+};
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  return {
+    paths: [],
+    fallback: "blocking",
+  };
+};
+
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  if (!(params && params.product)) {
+    return { notFound: true };
+  }
+
+  // Fetch data from DB.
+
+  return {
+    props: { products: [] },
+    revalidate: 60,
+  };
 };
 
 export default Home;
