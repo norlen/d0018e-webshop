@@ -4,5 +4,7 @@ export type Product = {
     category_id: number,
     quantity: number,
     price: number,
-    description: string
+    description: string,
+    producer_id: number,
+    image_url: string
 };
