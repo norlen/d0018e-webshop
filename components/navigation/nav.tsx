@@ -5,17 +5,17 @@ const navigation = {
     {
       id: "fruits",
       name: "Frukt",
-      href: "/kategori/frukt/",
+      href: "/kategori/Frukt/",
     },
     {
       id: "vegetables",
       name: "Grönsaker",
-      href: "/kategori/gronsaker/",
+      href: "/kategori/Grönsaker/",
     },
     {
       id: "meat",
       name: "Kött",
-      href: "/kategori/kott/",
+      href: "/kategori/Kött/",
     },
     // {
     //   id: "producers",
