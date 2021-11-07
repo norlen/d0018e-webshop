@@ -53,8 +53,10 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 export const getStaticProps: GetStaticProps = async ({params}) => {
+  if (!(params && params.category && typeof params.category === "string")) {
+    return { notFound: true };
+  }
   // Fetch data from DB.
-  //console.log(category);
   const prod = await getProductsByCategory(params.category);
   return {
     props: { products: prod },
