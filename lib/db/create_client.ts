@@ -1,12 +1,14 @@
 import { Client } from "pg";
 
-const client = new Client({
-  connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false,
-  },
-});
+var client;
+if (client === undefined) {
+  client = new Client({
+    connectionString: process.env.DATABASE_URL,
+    ssl: {
+      rejectUnauthorized: false,
+    },
+  });
+  client.connect();
+}
 
-client.connect();
-
-export default client;
+export default client as Client;
