@@ -1,26 +1,57 @@
 import client from "./create_client";
 
 export const getProductsAll = async () => {
-    try {
-      const res = await client.query(
-        "SELECT * FROM products;"
-      );
-
-      return res.rows;
-    } catch (err) {
-      console.error(err);
-    }
-    return [];
-  };
-
-export const getProductsByCategory = async (category: string) => {
-  try {
-    const query = 'SELECT * FROM Category c JOIN Products p ON c.id = p.category_id WHERE c.name=$1;';
-    const res = await client.query(query, [category.toLowerCase()]);
-    return res.rows;
+  const sql = `
+  SELECT p.id,
+         p.name,
+         p.description,
+         p.quantity,
+         p.price,
+         p.image_url,
+         c.name as category,
+         pr.name as producer
+  FROM products as p
+    JOIN category AS c on c.id = p.category_id
+    JOIN producer AS pr on pr.id = p.producer_id;`;
   
+  let products = [];
+  try {
+    client.connect();
+    const res = await client.query(sql);
+    products = res.rows;
   } catch (err) {
     console.error(err);
+  } finally {
+    client.end();
   }
-  return [];
+  return products;
+};
+
+export const getProductsByCategory = async (category: string) => {
+  const sql = `
+  SELECT p.id,
+         p.name,
+         p.description,
+         p.quantity,
+         p.price,
+         p.image_url,
+         c.name as category,
+         pr.name as producer
+  FROM products as p
+    JOIN category AS c on c.id = p.category_id
+    JOIN producer AS pr on pr.id = p.producer_id
+  WHERE
+    c.name = $1;`;
+  
+  let products = [];
+  try {
+    client.connect();
+    const res = await client.query(sql, [category.toLowerCase()]);
+    products = res.rows;
+  } catch (err) {
+    console.error(err);
+  } finally {
+    client.end();
+  }
+  return products;
 };
