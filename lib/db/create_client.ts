@@ -6,7 +6,7 @@ const create_client = (): Client => {
     ssl: {
       rejectUnauthorized: false,
     },
-  })
-}
+  });
+};
 
 export default create_client;

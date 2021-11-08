@@ -1,5 +1,9 @@
 import create_client from "./create_client";
 
+export const getProductById = async (id: string) => {
+  return undefined;
+};
+
 export const getProductsAll = async () => {
   const sql = `
   SELECT p.id,
@@ -13,7 +17,7 @@ export const getProductsAll = async () => {
   FROM products as p
     JOIN category AS c on c.id = p.category_id
     JOIN producer AS pr on pr.id = p.producer_id;`;
-  
+
   const client = create_client();
   let products = [];
   try {
@@ -43,7 +47,7 @@ export const getProductsByCategory = async (category: string) => {
     JOIN producer AS pr on pr.id = p.producer_id
   WHERE
     c.name = $1;`;
-  
+
   const client = create_client();
   let products = [];
   try {
