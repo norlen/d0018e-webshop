@@ -37,8 +37,8 @@ export const getProductsByCategory = async (category: string) => {
          p.image_url,
          c.name as category,
          pr.name as producer
-  FROM products as p
-    JOIN category AS c on c.id = p.category_id
+  FROM category as c
+    JOIN products AS p on p.category_id = c.id
     JOIN producer AS pr on pr.id = p.producer_id
   WHERE
     c.name = $1;`;
