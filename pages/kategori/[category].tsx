@@ -21,6 +21,7 @@ const Category: NextPage<StaticProps> = ({ category, products }) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="px-12 py-8">
+        <h1 className="font-medium text-3xl py-4 mb-8">{category}</h1>
         <div className="flex flex-wrap gap-10">
           {products.map((product) => (
             <ProductSmall key={product.id} product={product} />
