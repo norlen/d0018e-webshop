@@ -1,4 +1,4 @@
-import client from "./create_client";
+import create_client from "./create_client";
 
 export const getProductsAll = async () => {
   const sql = `
@@ -14,15 +14,16 @@ export const getProductsAll = async () => {
     JOIN category AS c on c.id = p.category_id
     JOIN producer AS pr on pr.id = p.producer_id;`;
   
+  const client = create_client();
   let products = [];
   try {
-    client.connect();
+    await client.connect();
     const res = await client.query(sql);
     products = res.rows;
   } catch (err) {
     console.error(err);
   } finally {
-    client.end();
+    await client.end();
   }
   return products;
 };
@@ -43,15 +44,16 @@ export const getProductsByCategory = async (category: string) => {
   WHERE
     c.name = $1;`;
   
+  const client = create_client();
   let products = [];
   try {
-    client.connect();
+    await client.connect();
     const res = await client.query(sql, [category.toLowerCase()]);
     products = res.rows;
   } catch (err) {
     console.error(err);
   } finally {
-    client.end();
+    await client.end();
   }
   return products;
 };

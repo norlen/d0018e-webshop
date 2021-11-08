@@ -1,10 +1,12 @@
 import { Client } from "pg";
 
-const client = new Client({
-  connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false,
-  },
-});
+const create_client = (): Client => {
+  return new Client({
+    connectionString: process.env.DATABASE_URL,
+    ssl: {
+      rejectUnauthorized: false,
+    },
+  })
+}
 
-export default client;
+export default create_client;
