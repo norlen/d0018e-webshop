@@ -3,6 +3,8 @@ import Head from "next/head";
 
 import type { NextPage } from "next";
 import type { Product } from "@lib/types";
+import { getProductById } from "@lib/db";
+import ProductComponent from "@components/products/product";
 
 type StaticProps = {
   product: Product & any; // type hack
@@ -17,7 +19,7 @@ const Product: NextPage<StaticProps> = ({ product }) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="flex py-2 lg:py-8 lg:px-12 justify-center">
-        {/* Content goes here */}
+        <ProductComponent product={product} />
       </main>
     </>
   );
@@ -36,9 +38,12 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   }
 
   // Fetch data from db.
-
+  let pro = await getProductById(params.product);
+  if (pro === undefined) {
+    return { notFound: true };
+  }
   return {
-    props: { product: undefined },
+    props: { product: pro },
     revalidate: 60,
   };
 };
