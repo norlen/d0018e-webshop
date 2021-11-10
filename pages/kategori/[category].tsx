@@ -4,8 +4,7 @@ import Head from "next/head";
 import ProductSmall from "@components/products/product_small";
 
 import type { NextPage } from "next";
-import type { Product } from "@lib/types";
-import { getProductsByCategory } from "@lib/db";
+import { getProductsByCategory, Product } from "@lib/db";
 
 type StaticProps = {
   category: string;
