@@ -38,11 +38,7 @@ const Navigation = () => {
       <Link href="/">
         <a className="">
           <span className="sr-only">Home</span>
-          <img
-            className="h-8 w-8"
-            src="https://tailwindui.com/img/logos/workflow-mark.svg?color=green&shade=600"
-            alt="Icon"
-          />
+          <img className="h-8 w-8" src="/images/Logo_small.jpeg" alt="Icon" />
         </a>
       </Link>
 
