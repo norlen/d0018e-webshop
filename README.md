@@ -1,10 +1,13 @@
 # Shop
 
+MVP for a made up web shop 
+
 ## Tech stack
 
-- [Next.js](https://nextjs.org/)
-- [Tailwind CSS](https://tailwindcss.com/)
-- [Prisma](https://www.prisma.io/)
+- Frontend framework: [Next.js](https://nextjs.org/)
+- Styling: [Tailwind CSS](https://tailwindcss.com/)
+- For database connection: [pg](https://github.com/brianc/node-postgres/)
+- Databse migrations: [db-migrate](https://github.com/db-migrate/node-db-migrate)
 
 For local development
 
@@ -19,10 +22,10 @@ npm install                                     # Install node dependencies
 docker-compose -f docker-compose.yml up -d      # Start db locally.
 ```
 
-So sync the db run
+To run migrations on the database, put the connection string to the data in `DATABASE_URL` in `.env` and run
 
 ```bash
-npx prisma db push
+npx db-migrate up
 ```
 
 Finally, to run the development server
@@ -32,25 +35,3 @@ npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-## Managing database
-
-They want us to manually do these steps, so use pgadmin to create/update tables and create migrations.
-
-## Resources
-
-Other visual libraries used are:
-
-- [Heroicons](https://github.com/tailwindlabs/heroicons)
-- [Headless UI](https://headlessui.dev/)
-- [Tailwind CSS aspect ratio plugin](https://github.com/tailwindlabs/tailwindcss-aspect-ratio)
-
-Component libraries, where we can get inspiration and code samples:
-- [TailwindKit](https://www.tailwind-kit.com/).
-- Free resources from [Tailwind UI](https://tailwindui.com/).
-
-
-- Other resources
-https://lofiui.co/
-https://merakiui.com/
-https://treact.owaiskhan.me/

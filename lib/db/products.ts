@@ -9,9 +9,11 @@ export type Product = {
   image_url: string;
   category: string;
   producer: string;
-}
+};
 
-export const getProductById = async (id: string): Promise<Product | undefined> => {
+export const getProductById = async (
+  id: string
+): Promise<Product | undefined> => {
   const sql = `
   SELECT p.id,
          p.name,
@@ -35,7 +37,7 @@ export const getProductById = async (id: string): Promise<Product | undefined> =
       products = res.rows[0];
     }
   } catch (err) {
-    console.error(err);
+    console.error("ERROR getProductById:", err);
   } finally {
     await client.end();
   }
@@ -63,14 +65,16 @@ export const getProductsAll = async (): Promise<Product[]> => {
     const res = await client.query(sql);
     products = res.rows;
   } catch (err) {
-    console.error(err);
+    console.error("ERROR getProductsAll:", err);
   } finally {
     await client.end();
   }
   return products;
 };
 
-export const getProductsByCategory = async (category: string): Promise<Product[]> => {
+export const getProductsByCategory = async (
+  category: string
+): Promise<Product[]> => {
   const sql = `
   SELECT p.id,
          p.name,
@@ -93,7 +97,7 @@ export const getProductsByCategory = async (category: string): Promise<Product[]
     const res = await client.query(sql, [category.toLowerCase()]);
     products = res.rows;
   } catch (err) {
-    console.error(err);
+    console.error("ERROR getProductsByCategory:", err);
   } finally {
     await client.end();
   }

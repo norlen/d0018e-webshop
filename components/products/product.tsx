@@ -13,8 +13,6 @@ type Props = {
 };
 
 const ProductC = ({ product }: Props) => {
-  console.log("product", product);
-
   return (
     <div className="flex gap-4">
       <div className="w-96 h-96 rounded-lg overflow-hidden relative">
