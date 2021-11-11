@@ -2,15 +2,14 @@ import { GetStaticProps, GetStaticPaths } from "next";
 import Head from "next/head";
 
 import type { NextPage } from "next";
-import type { Product } from "@lib/types";
-import { getProductById } from "@lib/db";
+import { getProductById, Product } from "@lib/db";
 import ProductComponent from "@components/products/product";
 
 type StaticProps = {
-  product: Product & any; // type hack
+  product: Product;
 };
 
-const Product: NextPage<StaticProps> = ({ product }) => {
+const ProductPage: NextPage<StaticProps> = ({ product }) => {
   return (
     <>
       <Head>
@@ -37,15 +36,15 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     return { notFound: true };
   }
 
-  // Fetch data from db.
-  let pro = await getProductById(params.product);
-  if (pro === undefined) {
+  let product = await getProductById(params.product);
+  if (product === undefined) {
     return { notFound: true };
   }
+
   return {
-    props: { product: pro },
+    props: { product },
     revalidate: 60,
   };
 };
 
-export default Product;
+export default ProductPage;

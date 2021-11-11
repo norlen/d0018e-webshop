@@ -1,6 +1,17 @@
 import create_client from "./create_client";
 
-export const getProductById = async (id: string) => {
+export type Product = {
+  id: string;
+  name: string;
+  description: string;
+  quantity: string;
+  price: string;
+  image_url: string;
+  category: string;
+  producer: string;
+}
+
+export const getProductById = async (id: string): Promise<Product | undefined> => {
   const sql = `
   SELECT p.id,
          p.name,
@@ -31,7 +42,7 @@ export const getProductById = async (id: string) => {
   return products;
 };
 
-export const getProductsAll = async () => {
+export const getProductsAll = async (): Promise<Product[]> => {
   const sql = `
   SELECT p.id,
          p.name,
@@ -59,7 +70,7 @@ export const getProductsAll = async () => {
   return products;
 };
 
-export const getProductsByCategory = async (category: string) => {
+export const getProductsByCategory = async (category: string): Promise<Product[]> => {
   const sql = `
   SELECT p.id,
          p.name,

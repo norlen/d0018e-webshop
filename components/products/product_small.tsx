@@ -9,7 +9,19 @@ const cutoff = (s: string, maxlen: number): string => {
   return s;
 };
 
-const ProductSmall = ({ product }: { product: any }) => {
+type Props = {
+  product: {
+    id: string;
+    name: string;
+    category: string;
+    producer: string;
+    description: string;
+    price: string;
+    image_url: string;
+  };
+};
+
+const ProductSmall = ({ product }: Props) => {
   return (
     <div className="flex gap-4 flex-col max-w-sm">
       <Link href={`/produkt/${product.id}`}>

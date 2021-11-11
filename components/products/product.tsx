@@ -1,9 +1,15 @@
 import Image from "next/image";
 
-import type { Product } from "@lib/types";
-
 type Props = {
-  product: Product & { category: string; producer: string };
+  product: {
+    id: string;
+    name: string;
+    category: string;
+    producer: string;
+    description: string;
+    price: string;
+    image_url: string;
+  };
 };
 
 const ProductC = ({ product }: Props) => {
