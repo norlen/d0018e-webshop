@@ -2,9 +2,9 @@ import Navigation from "@components/navigation/nav";
 import Footer from "@components/footer/foot";
 
 const Layout = ({ children }: any) => (
-  <div className="bg-white">
+  <div className="bg-white flex flex-col">
     <Navigation />
-    {children}
+    <div className="flex-1">{children}</div>
     <Footer />
   </div>
 );
