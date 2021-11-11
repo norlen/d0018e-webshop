@@ -5,6 +5,6 @@
 @layer base {
   body,
   #__next {
-    @apply h-screen;
+    @apply h-full;
   }
 }
