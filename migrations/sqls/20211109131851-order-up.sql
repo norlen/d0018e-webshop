@@ -6,7 +6,6 @@ CREATE TABLE orders (
     phone_number    TEXT    NOT NULL,
     email           TEXT    NOT NULL,
     address         TEXT    NOT NULL,
-    total_price     INT     NOT NULL,
 
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
