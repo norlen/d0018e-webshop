@@ -1,4 +1,5 @@
 import Link from "next/link";
+import useUser from "lib/useUser";
 
 const navigation = {
   pages: [
@@ -31,7 +32,7 @@ const navigation = {
 };
 
 const Navigation = () => {
-  // const [open, setOpen] = useState(false);
+  const { user } = useUser();
 
   return (
     <nav className="px-8 h-16 flex items-center gap-8 border-b border-gray-100">
@@ -52,16 +53,27 @@ const Navigation = () => {
         ))}
       </div>
 
-      <div className="ml-auto flex items-center gap-4 hidden">
-        <Link href="/login">
-          <a className="text-sm font-medium text-gray-700 hover:text-green-500">
-            Logga in
-          </a>
-        </Link>
+      <div className="ml-auto flex items-center gap-4">
+        {/* this we might need to change to false instead of undefined. */}
+        {user?.isLoggedIn === undefined && (
+          <Link href="/login/">
+            <a className="text-sm font-medium text-gray-700 hover:text-green-500">
+              Logga in
+            </a>
+          </Link>
+        )}
+
+        {user?.isLoggedIn === true && (
+          <Link href="/api/logout/">
+            <a className="text-sm font-medium text-gray-700 hover:text-green-500">
+              Logga ut
+            </a>
+          </Link>
+        )}
 
         <span className="h-6 w-px bg-gray-200" aria-hidden="true" />
 
-        <Link href="/bli-medlem">
+        <Link href="/">
           <a className="text-sm font-medium text-gray-700 hover:text-green-500">
             Bli medlem
           </a>
