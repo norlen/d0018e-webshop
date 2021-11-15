@@ -1,5 +1,5 @@
 import Link from "next/link";
-import useUser from "lib/useUser";
+import useUser from "@lib/hooks/useUser";
 
 const navigation = {
   pages: [
@@ -54,30 +54,30 @@ const Navigation = () => {
       </div>
 
       <div className="ml-auto flex items-center gap-4">
-        {/* this we might need to change to false instead of undefined. */}
-        {user?.isLoggedIn === undefined && (
-          <Link href="/login/">
-            <a className="text-sm font-medium text-gray-700 hover:text-green-500">
-              Logga in
-            </a>
-          </Link>
-        )}
-
-        {user?.isLoggedIn === true && (
-          <Link href="/api/logout/">
+        {/* Show login and register button if user is not logged in, otherwise logout button. */}
+        {user?.isLoggedIn ? (
+          <Link href="/logout/">
             <a className="text-sm font-medium text-gray-700 hover:text-green-500">
               Logga ut
             </a>
           </Link>
+        ) : (
+          <div className="flex items-center gap-8">
+            <Link href="/bli-medlem">
+              <a className="text-sm font-medium text-gray-700 hover:text-green-500">
+                Bli medlem
+              </a>
+            </Link>
+
+            <Link href="/login/">
+              <a className="text-sm font-medium text-gray-700 hover:text-green-500">
+                Logga in
+              </a>
+            </Link>
+          </div>
         )}
 
         <span className="h-6 w-px bg-gray-200" aria-hidden="true" />
-
-        <Link href="/">
-          <a className="text-sm font-medium text-gray-700 hover:text-green-500">
-            Bli medlem
-          </a>
-        </Link>
       </div>
     </nav>
   );

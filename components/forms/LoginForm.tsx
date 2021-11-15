@@ -1,4 +1,5 @@
 import { FormEvent } from "react";
+import Link from "next/link";
 
 export default function Form({
   errorMessage,
@@ -52,26 +53,5 @@ export default function Form({
         </a>
       </p>
     </div>
-    /*     <div className="h-screen bg-white relative flex flex-col space-y-10 justify-center items-center">
-      <div className="bg-white md:shadow-lg shadow-none rounded p-6 w-96" >
-        <h1 className="text-3xl font-bold leading-normal" >Logga In</h1>
-        <p className="text-sm leading-normal">Inloggning krävs för att handla.</p>
-        <form className="space-y-5" onSubmit={onSubmit}>
-          <label className="mb-4 relative">
-            <span>Email</span>
-            <input className="w-full rounded px-3 border border-gray-500 pt-5 pb-2 focus:outline-none input active:outline-none" type="text" name="email" required />
-          </label>
-          <label className="relative flex items-center border border-gray-500 focus:ring focus:border-blue-500 rounded">
-              <span>Type password</span>
-              <input className="w-full rounded px-3 pt-5 outline-none pb-2 focus:outline-none active:outline-none input active:border-blue-500" type="password" name="password" required/>
-          </label>
-
-          <button type="submit">Login</button>
-
-          {errorMessage && <p className="error">{errorMessage}</p>}
-
-        </form>
-      </div>
-    </div> */
   );
 }

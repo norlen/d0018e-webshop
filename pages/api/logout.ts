@@ -1,14 +1,14 @@
-import useUser from '@lib/useUser'
-import { withIronSessionApiRoute } from 'iron-session/next'
-import { sessionOptions } from 'lib/session'
-import { NextApiRequest, NextApiResponse } from 'next'
-import type { User } from 'pages/api/user'
+import useUser from "@lib/hooks/useUser";
+import { withIronSessionApiRoute } from "iron-session/next";
+import { sessionOptions } from "lib/session";
+import { NextApiRequest, NextApiResponse } from "next";
+import type { User } from "pages/api/user";
 
-export default withIronSessionApiRoute(logoutRoute, sessionOptions)
+export default withIronSessionApiRoute(logoutRoute, sessionOptions);
 
 function logoutRoute(req: NextApiRequest, res: NextApiResponse<User>) {
-  req.session.destroy()
+  req.session.destroy();
   //res.json({ isLoggedIn: false, login: '', avatarUrl: '' })
   // TODO
-  res.redirect('/login');
+  res.redirect("/login");
 }
