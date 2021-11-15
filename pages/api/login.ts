@@ -11,7 +11,7 @@ export default withIronSessionApiRoute(loginRoute, sessionOptions);
 async function loginRoute(req: NextApiRequest, res: NextApiResponse) {
   const { email, password } = await req.body;
   try {
-    if (!(email && email.length > 3)) {
+    if (!(email && email.length > 3 && password && password.length > 0)) {
       throw Error("illegal input.");
     }
     const userData = await find_user(email);

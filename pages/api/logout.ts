@@ -1,4 +1,3 @@
-import useUser from "@lib/hooks/useUser";
 import { withIronSessionApiRoute } from "iron-session/next";
 import { sessionOptions } from "lib/session";
 import { NextApiRequest, NextApiResponse } from "next";
@@ -8,7 +7,5 @@ export default withIronSessionApiRoute(logoutRoute, sessionOptions);
 
 function logoutRoute(req: NextApiRequest, res: NextApiResponse<User>) {
   req.session.destroy();
-  //res.json({ isLoggedIn: false, login: '', avatarUrl: '' })
-  // TODO
-  res.redirect("/login");
+  res.json({ isLoggedIn: false, login: '', name: '' })
 }

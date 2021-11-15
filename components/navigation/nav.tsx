@@ -56,7 +56,7 @@ const Navigation = () => {
       <div className="ml-auto flex items-center gap-4">
         {/* Show login and register button if user is not logged in, otherwise logout button. */}
         {user?.isLoggedIn ? (
-          <Link href="/logout/">
+          <Link href="/logout">
             <a className="text-sm font-medium text-gray-700 hover:text-green-500">
               Logga ut
             </a>
@@ -69,7 +69,7 @@ const Navigation = () => {
               </a>
             </Link>
 
-            <Link href="/login/">
+            <Link href="/login">
               <a className="text-sm font-medium text-gray-700 hover:text-green-500">
                 Logga in
               </a>
