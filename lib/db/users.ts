@@ -6,7 +6,7 @@ export type user = {
   password: string;
 };
 
-export const find_user = async (email: string): Promise<user | undefined> => {
+export const findUser = async (email: string): Promise<user | undefined> => {
   const sql = `SELECT u.email,
                             u.name,
                             u.password
@@ -19,11 +19,9 @@ export const find_user = async (email: string): Promise<user | undefined> => {
     const res = await client.query(sql, [email]);
     if (res.rows.length > 0) {
       user = res.rows[0];
-    } else {
-      user = undefined;
-    }
+    } 
   } catch (err) {
-    console.error("ERROR find_user:", err);
+    console.error("ERROR findUser:", err);
   } finally {
     await client.end();
   }
