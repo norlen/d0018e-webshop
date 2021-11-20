@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/router";
 import useSWR from "swr";
 import { User } from "../../pages/api/user";
+import { fetcher } from "@lib/util";
 
 type UserHook = {
   redirectTo?: string;
@@ -9,7 +10,7 @@ type UserHook = {
 };
 
 export const useUser = ({ redirectTo, redirectIfFound }: UserHook = {}) => {
-  const { data: user, mutate: mutateUser } = useSWR<User>("/api/user");
+  const { data: user, mutate: mutateUser } = useSWR<User>("/api/user", fetcher);
   const router = useRouter();
 
   useEffect(() => {
