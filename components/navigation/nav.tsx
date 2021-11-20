@@ -5,7 +5,7 @@ import { useUser } from "@lib/hooks";
 
 import Cart from "@components/cart/cart";
 import { fetcher } from "@lib/util";
-import router from "next/router";
+import router, { useRouter } from "next/router";
 
 const navigation = {
   pages: [
@@ -39,6 +39,7 @@ const navigation = {
 
 const Navigation = () => {
   const { user, mutateUser } = useUser();
+  const router = useRouter();
 
   return (
     <nav className="px-8 h-16 flex items-center gap-8 border-b border-gray-100">
@@ -68,23 +69,23 @@ const Navigation = () => {
         {/* Show login and register button if user is not logged in, otherwise logout button. */}
         {user && user.isLoggedIn ? (
           <>
-            <a
-              className="text-sm font-medium text-gray-700 hover:text-green-500"
-              href="/api/logout"
-              onClick={async (e) => {
-                e.preventDefault();
-                mutateUser(
-                  await fetcher("/api/logout", { method: "POST" }),
-                  false
-                );
-                router.push("/login");
-              }}
-            >
-              Logga ut
-            </a>
-
+            {/* must wrap this in Link? */}
+            <Link href="/">
+              <a
+                className="text-sm font-medium text-gray-700 hover:text-green-500"
+                onClick={async (e) => {
+                  e.preventDefault();
+                  mutateUser(
+                    await fetcher("/api/logout", { method: "POST" }),
+                    false
+                  );
+                  router.push("/login");
+                }}
+              >
+                Logga ut
+              </a>
+            </Link>
             <span className="h-6 w-px bg-gray-200" aria-hidden="true" />
-
             <Cart />
           </>
         ) : (
