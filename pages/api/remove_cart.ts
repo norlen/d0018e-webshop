@@ -9,7 +9,7 @@ type Data = {
   message?: string;
 };
 
-const getCartRoute = async (
+const removeCartRoute = async (
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) => {
@@ -28,9 +28,9 @@ const getCartRoute = async (
     res.status(200).json({ data: item });
   } catch (error) {
     const message = (error as Error).message;
-    console.error("ERROR getCartRoute:", message);
+    console.error("ERROR removeCartRoute:", message);
     res.status(400).json({ message });
   }
 };
 
-export default withIronSessionApiRoute(getCartRoute, sessionOptions);
+export default withIronSessionApiRoute(removeCartRoute, sessionOptions);
