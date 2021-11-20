@@ -1,21 +1,21 @@
 import { useState } from "react";
 import { useCart } from "@lib/hooks";
 
-export const useAddToCart = () => {
+export const useRemoveFromCart = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | undefined>(undefined);
-  const { mutateCart } = useCart();
+  const { cart, mutateCart } = useCart();
 
-  const addToCart = async (productId: string, quantity: number = 1) => {
+  const removeFromCart = async (productId: string) => {
     setError(undefined); // Clear errors.
 
-    const url = "/api/add_cart";
+    const url = "/api/remove_cart";
     const options = {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ productId, quantity }),
+      body: JSON.stringify({ productId }),
     };
 
     try {
@@ -28,7 +28,7 @@ export const useAddToCart = () => {
         setError(data.message);
       }
 
-      mutateCart();
+      mutateCart({ data: cart.filter((i) => i.id !== productId) });
       return data;
     } catch (err) {
       console.error("fetch error", err);
@@ -36,7 +36,7 @@ export const useAddToCart = () => {
     }
   };
 
-  return { loading, error, addToCart };
+  return { loading, error, removeFromCart };
 };
 
-export default useAddToCart;
+export default useRemoveFromCart;
