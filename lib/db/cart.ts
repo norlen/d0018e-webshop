@@ -71,3 +71,23 @@ export const addToCart = async (
   }
   return undefined;
 };
+
+export const removeFromCart = async (userId: string, productId: string) => {
+  const sql = `
+  DELETE FROM cart
+  WHERE
+    user_id = $1 AND
+    product_id = $2;
+  `;
+
+  const client = create_client();
+  try {
+    await client.connect();
+    await client.query(sql, [userId, productId]);
+  } catch (err) {
+    console.error(err);
+  } finally {
+    await client.end();
+  }
+  return undefined;
+};
