@@ -1,6 +1,7 @@
 import create_client from "./create_client";
 
 export type CartItem = {
+  id: string;
   name: string;
   in_stock: number;
   price: number;
@@ -12,7 +13,8 @@ export type CartItem = {
 
 export const getCartByUserId = async (id: string): Promise<CartItem[]> => {
   const sql = `
-  SELECT p.name,
+  SELECT p.id,
+         p.name,
          p.quantity > 0 AS in_stock,
          p.price,
          pr.name AS producer,
@@ -39,4 +41,33 @@ export const getCartByUserId = async (id: string): Promise<CartItem[]> => {
     await client.end();
   }
   return cart;
+};
+
+export const addToCart = async (
+  userId: string,
+  productId: string,
+  quantity: number
+): Promise<undefined> => {
+  const sql = `
+  INSERT INTO cart (
+    user_id,
+    product_id,
+    quantity
+  )
+  VALUES
+    ($1, $2, $3)
+  ON CONFLICT (user_id, product_id) DO
+    UPDATE SET quantity = cart.quantity + EXCLUDED.quantity;
+  `;
+
+  const client = create_client();
+  try {
+    await client.connect();
+    await client.query(sql, [userId, productId, quantity]);
+  } catch (err) {
+    console.error(err);
+  } finally {
+    await client.end();
+  }
+  return undefined;
 };

@@ -3,10 +3,12 @@ import { useRouter } from "next/router";
 import useSWR from "swr";
 import { User } from "../../pages/api/user";
 
-export default function useUser({
-  redirectTo = "",
-  redirectIfFound = false,
-} = {}) {
+type UserHook = {
+  redirectTo?: string;
+  redirectIfFound?: boolean;
+};
+
+export const useUser = ({ redirectTo, redirectIfFound }: UserHook = {}) => {
   const { data: user, mutate: mutateUser } = useSWR<User>("/api/user");
   const router = useRouter();
 
@@ -23,4 +25,6 @@ export default function useUser({
   }, [user, redirectIfFound, redirectTo, router]);
 
   return { user, mutateUser };
-}
+};
+
+export default useUser;
