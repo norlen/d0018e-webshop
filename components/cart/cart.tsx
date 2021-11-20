@@ -61,7 +61,7 @@ const CartItem = ({ item, setOpen }: CartItemProps) => {
 
 const Cart = () => {
   const [open, setOpen] = useState(false);
-  const { cart: cartItems, mutateCart } = useCart();
+  const { cart: cartItems } = useCart();
 
   return (
     <div className="">
