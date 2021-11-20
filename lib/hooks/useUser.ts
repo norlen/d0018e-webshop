@@ -2,12 +2,15 @@ import { useEffect } from "react";
 import { useRouter } from "next/router";
 import useSWR from "swr";
 import { User } from "../../pages/api/user";
+import { fetcher } from "@lib/util";
 
-export default function useUser({
-  redirectTo = "",
-  redirectIfFound = false,
-} = {}) {
-  const { data: user, mutate: mutateUser } = useSWR<User>("/api/user");
+type UserHook = {
+  redirectTo?: string;
+  redirectIfFound?: boolean;
+};
+
+export const useUser = ({ redirectTo, redirectIfFound }: UserHook = {}) => {
+  const { data: user, mutate: mutateUser } = useSWR<User>("/api/user", fetcher);
   const router = useRouter();
 
   useEffect(() => {
@@ -23,4 +26,6 @@ export default function useUser({
   }, [user, redirectIfFound, redirectTo, router]);
 
   return { user, mutateUser };
-}
+};
+
+export default useUser;

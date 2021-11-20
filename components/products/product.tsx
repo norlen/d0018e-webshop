@@ -1,4 +1,6 @@
 import Image from "next/image";
+import Link from "next/link";
+import { useAddToCart, useUser } from "@lib/hooks";
 
 type Props = {
   product: {
@@ -13,6 +15,10 @@ type Props = {
 };
 
 const ProductC = ({ product }: Props) => {
+  const { loading, error, addToCart } = useAddToCart();
+  const { user } = useUser();
+  // TODO: Global flash for errors.
+
   return (
     <div className="flex gap-4">
       <div className="w-96 h-96 rounded-lg overflow-hidden relative">
@@ -37,9 +43,22 @@ const ProductC = ({ product }: Props) => {
           <p className="">
             Pris: <span className="font-medium">{product.price} kr/kg</span>
           </p>
-          <button className="py-2 px-4 rounded-md shadow-md bg-green-300 todohover:bg-green-500 disabled cursor-not-allowed opacity-50">
-            Köp 1 kg
-          </button>
+          {user && user.isLoggedIn ? (
+            <button
+              className={`py-2 px-4 rounded-md shadow-md bg-green-300 hover:bg-green-500 ${
+                loading ? "disabled opacity-50" : ""
+              }`}
+              onClick={() => addToCart(product.id, 1)}
+            >
+              Köp 1 kg
+            </button>
+          ) : (
+            <button className="py-2 px-4 rounded-md shadow-md bg-green-300 hover:bg-green-500">
+              <Link href="/login">
+                <a>Köp 1 kg</a>
+              </Link>
+            </button>
+          )}
         </div>
       </div>
     </div>

@@ -1,5 +1,9 @@
 import Link from "next/link";
-import useUser from "@lib/hooks/useUser";
+import Image from "next/image";
+
+import { useUser } from "@lib/hooks";
+
+import Cart from "@components/cart/cart";
 
 const navigation = {
   pages: [
@@ -39,7 +43,12 @@ const Navigation = () => {
       <Link href="/">
         <a className="">
           <span className="sr-only">Home</span>
-          <img className="h-8 w-8" src="/images/Logo_small.jpeg" alt="Icon" />
+          <Image
+            height={32}
+            width={32}
+            src="/images/Logo_small.jpeg"
+            alt="Home"
+          />
         </a>
       </Link>
 
@@ -55,12 +64,18 @@ const Navigation = () => {
 
       <div className="ml-auto flex items-center gap-4">
         {/* Show login and register button if user is not logged in, otherwise logout button. */}
-        {user?.isLoggedIn ? (
-          <Link href="/logout">
-            <a className="text-sm font-medium text-gray-700 hover:text-green-500">
-              Logga ut
-            </a>
-          </Link>
+        {user && user.isLoggedIn ? (
+          <>
+            <Link href="/logout">
+              <a className="text-sm font-medium text-gray-700 hover:text-green-500">
+                Logga ut
+              </a>
+            </Link>
+
+            <span className="h-6 w-px bg-gray-200" aria-hidden="true" />
+
+            <Cart />
+          </>
         ) : (
           <div className="flex items-center gap-8">
             <Link href="/bli-medlem">
@@ -76,8 +91,6 @@ const Navigation = () => {
             </Link>
           </div>
         )}
-
-        <span className="h-6 w-px bg-gray-200" aria-hidden="true" />
       </div>
     </nav>
   );
