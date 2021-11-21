@@ -28,9 +28,9 @@ const ProductSmall = ({ product }: Props) => {
   // TODO: Global flash for errors.
 
   return (
-    <div className="flex gap-4 flex-col max-w-sm">
+    <div className="flex gap-4 flex-col max-w-sm bg-white rounded-lg shadow-md">
       <Link href={`/produkt/${product.id}`}>
-        <a className="h-96 w-96 relative rounded-lg overflow-hidden">
+        <a className="h-96 w-96 relative rounded-t-lg overflow-hidden">
           <Image
             src={product.image_url}
             layout="fill"
@@ -39,13 +39,13 @@ const ProductSmall = ({ product }: Props) => {
           />
         </a>
       </Link>
-      <div className="flex flex-col">
+      <div className="flex flex-col px-2">
         <p className="text-sm text-gray-500">{product.category}</p>
         <p className="font-medium">{product.name}</p>
         <p className="font-medium">{product.producer}</p>
         <p className="test-gray-800">{cutoff(product.description, 50)}</p>
       </div>
-      <div className="flex justify-between align-bottom">
+      <div className="flex justify-between align-bottom px-2 pb-2">
         <Link href={`/produkt/${product.id}`}>
           <a className="hover:text-green-500 pt-1">Läs mer</a>
         </Link>

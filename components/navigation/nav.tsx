@@ -42,7 +42,7 @@ const Navigation = () => {
   const router = useRouter();
 
   return (
-    <nav className="px-8 h-16 flex items-center gap-8 border-b border-gray-100">
+    <nav className="px-8 h-16 flex items-center gap-8 border-b border-gray-100 bg-white">
       <Link href="/">
         <a className="">
           <span className="sr-only">Home</span>
