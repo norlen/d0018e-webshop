@@ -20,8 +20,8 @@ const ProductC = ({ product }: Props) => {
   // TODO: Global flash for errors.
 
   return (
-    <div className="flex gap-4">
-      <div className="w-96 h-96 rounded-lg overflow-hidden relative">
+    <div className="flex gap-4 bg-white rounded-lg">
+      <div className="w-96 h-96 rounded-l-lg overflow-hidden relative">
         <Image
           src={product.image_url}
           alt={product.name}
@@ -29,7 +29,7 @@ const ProductC = ({ product }: Props) => {
           className="w-full h-full object-center object-cover"
         />
       </div>
-      <div className="flex flex-col justify-between">
+      <div className="flex flex-col justify-between pr-8 py-4">
         <div className="flex flex-col">
           <p className="font-medium">{product.name}</p>
           <p className="text-sm text-gray-500">{product.category}</p>
