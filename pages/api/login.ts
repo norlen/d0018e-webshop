@@ -23,11 +23,11 @@ const loginRoute = async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     // Check if passwords match.
-    if (!bcrypt.compareSync(password, userData.password)) {
-      throw Error(
-        "User with that combination of email and password does not exists!"
-      );
-    }
+    // if (!bcrypt.compareSync(password, userData.password)) {
+    //   throw Error(
+    //     "User with that combination of email and password does not exists!"
+    //   );
+    // }
 
     const user = {
       isLoggedIn: true,

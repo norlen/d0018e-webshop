@@ -1,6 +1,86 @@
 import create_client from "./create_client";
 
-type CustomerInfo = {
+export type Order = {
+  id: string;
+  name: string;
+  phonenumber: string;
+  email: string;
+  address: string;
+  items: OrderItem[];
+  userid: string;
+  status: number;
+};
+
+export type OrderItem = {
+  name: string;
+  producer: string;
+  category: string;
+  price: number;
+  quantity: number;
+  imageurl: string;
+};
+
+export const getOrderById = async (id: string): Promise<Order> => {
+  const sql = `
+  SELECT id,
+         order_status AS orderstatus,
+         name,
+         phone_number AS phonenumber,
+         email,
+         address,
+         user_id AS userid,
+         order_status AS status
+  FROM orders
+  WHERE id = $1;
+  `;
+
+  const client = create_client();
+  let order = undefined;
+  try {
+    await client.connect();
+    const res = await client.query(sql, [id]);
+    if (res.rows.length > 0) {
+      order = res.rows[0];
+      order.items = [];
+    }
+  } catch (err) {
+    console.error("ERROR getOrderById:", err);
+  } finally {
+    await client.end();
+  }
+  return order;
+};
+
+export const getOrderItems = async (orderId: string): Promise<OrderItem[]> => {
+  const sql = `
+  SELECT p.name,
+         c.name AS category,
+         pr.name AS producer,
+         o.price,
+         o.quantity,
+         p.image_url AS imageUrl
+  FROM order_products AS o
+    INNER JOIN products AS p ON p.id = o.product_id
+    INNER JOIN category AS c ON c.id = p.category_id
+    INNER JOIN producer AS pr ON pr.id = p.producer_id
+  WHERE o.order_id = $1;
+  `;
+
+  const client = create_client();
+  let items = [];
+  try {
+    await client.connect();
+    const res = await client.query(sql, [orderId]);
+    items = res.rows;
+  } catch (err) {
+    console.error("ERROR getitemsById:", err);
+  } finally {
+    await client.end();
+  }
+  return items;
+};
+
+export type CustomerInfo = {
   id: string;
   name: string;
   phoneNumber: string;
@@ -8,14 +88,15 @@ type CustomerInfo = {
   address: string;
 };
 
-type CreateOrderItem = {
+export type CreateOrderItem = {
   id: string;
   quantity: number;
 };
 
 export const createOrder = async (
   customer: CustomerInfo,
-  items: CreateOrderItem[]
+  items: CreateOrderItem[],
+  subtotal: number
 ): Promise<string | undefined> => {
   const createOrderSql = `
   INSERT INTO orders (
@@ -44,7 +125,8 @@ export const createOrder = async (
          $3 as quantity
   FROM products AS p
   WHERE
-    p.id = $2;
+    p.id = $2
+  RETURNING (price * $3) AS price;
   `;
 
   const removeCartItemsSql = `
@@ -79,8 +161,20 @@ export const createOrder = async (
 
     // Add all the products contained in the order.
     // This can probably be done in a single query, but let's keep it simpler.
+    let total = 0;
     for (let item of items) {
-      await client.query(createOrderItemSql, [orderId, item.id, item.quantity]);
+      const res = await client.query(createOrderItemSql, [
+        orderId,
+        item.id,
+        item.quantity,
+      ]);
+      if (res.rows.length > 0) {
+        total += parseInt(res.rows[0].price);
+      }
+    }
+    if (subtotal != total) {
+      // Price mismatch from what we want to charge the customer, compared to what they saw in the client.
+      throw Error("price mismatch");
     }
 
     // Remove these products from the cart. Let's clear the entire cart removing items that

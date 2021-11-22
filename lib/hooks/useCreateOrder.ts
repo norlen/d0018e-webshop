@@ -16,6 +16,7 @@ export const useCreateOrder = () => {
     email: string,
     address: string,
     phoneNumber: string,
+    subtotal: number,
     cart: Item[]
   ) => {
     setError(undefined);
@@ -26,7 +27,14 @@ export const useCreateOrder = () => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ name, email, address, phoneNumber, cart }),
+      body: JSON.stringify({
+        name,
+        email,
+        address,
+        phoneNumber,
+        cart,
+        subtotal,
+      }),
     };
 
     try {

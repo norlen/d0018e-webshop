@@ -7,6 +7,7 @@ import { useState } from "react";
 import { useCart } from "@lib/hooks";
 import { CartItem } from "@lib/db/cart";
 import { useRemoveFromCart, useCreateOrder } from "@lib/hooks";
+import { useRouter } from "next/router";
 
 const CheckoutPage: NextPage = () => {
   const { cart } = useCart();
@@ -17,13 +18,30 @@ const CheckoutPage: NextPage = () => {
   const [address, setAddress] = useState("");
   const [city, setCity] = useState("");
   const [postalCode, setPostalCode] = useState("");
-  const [orderPlaced, setOrderPlaced] = useState(false);
+  const router = useRouter();
+  const [createOrderError, setError] = useState("");
+
+  const subtotal = cart
+    .map((i) => i.price * i.quantity)
+    .reduce((acc, v) => acc + v, 0);
 
   const onSubmit = async () => {
     const combinedAddress = [address, postalCode, city].join(", ");
     const cartItems = cart.map((c) => ({ id: c.id, quantity: c.quantity }));
-    await createOrder(name, email, combinedAddress, phoneNumber, cartItems);
-    setOrderPlaced(true);
+
+    const res = await createOrder(
+      name,
+      email,
+      combinedAddress,
+      phoneNumber,
+      subtotal,
+      cartItems
+    );
+    if (res.message) {
+      setError(res.message);
+    } else {
+      router.push(`/order/${res.orderId}`);
+    }
   };
 
   const canPlaceOrder =
@@ -33,8 +51,7 @@ const CheckoutPage: NextPage = () => {
     address.length > 5 &&
     postalCode.length >= 5 &&
     city.length > 0 &&
-    phoneNumber.length > 5 &&
-    !orderPlaced;
+    phoneNumber.length > 5;
 
   return (
     <>
@@ -46,7 +63,7 @@ const CheckoutPage: NextPage = () => {
       <main className="flex flex-col lg:flex-row gap-12 justify-center lg:px-12 py-4 lg:py-8">
         <div className="flex flex-col gap-4 max-w-md mx-auto lg:m-0 px-2">
           <h1 className="text-2xl">Leveransinformation</h1>
-          <form className="flex flex-col gap-4" onSubmit={onSubmit}>
+          <form className="flex flex-col gap-4">
             <Input
               name="name"
               readableName="Namn"
@@ -106,12 +123,7 @@ const CheckoutPage: NextPage = () => {
             <div className="border-t border-gray-200 pt-6 pb-2 px-2">
               <div className="flex justify-between text-base font-medium text-gray-900">
                 <p>Totalt</p>
-                <p>
-                  {cart
-                    .map((i) => i.price * i.quantity)
-                    .reduce((acc, v) => acc + v, 0)}{" "}
-                  kr
-                </p>
+                <p>{subtotal} kr</p>
               </div>
             </div>
             <div className="border-t border-gray-200 py-4">
@@ -121,12 +133,23 @@ const CheckoutPage: NextPage = () => {
                 } ${!canPlaceOrder && "cursor-not-allowed"} ${
                   loading && "cursor-wait"
                 }`}
+                onClick={onSubmit}
               >
                 {loading ? "Lägger order..." : "Lägg order"}
               </button>
             </div>
           </div>
         </div>
+        {createOrderError && (
+          <div className="bg-red-200 rounded-md text-center py-1 text-sm border-red-500 border">
+            {createOrderError}
+          </div>
+        )}
+        {error && (
+          <div className="bg-red-200 rounded-md text-center py-1 text-sm border-red-500 border">
+            {error}
+          </div>
+        )}
       </main>
     </>
   );

@@ -25,9 +25,9 @@ const createOrderRoute = async (
     if (!validateCart(req.body.cart)) {
       throw Error("invalid cart items");
     }
-    const { cart, name, phoneNumber, email, address } = req.body;
+    const { cart, name, phoneNumber, email, address, subtotal } = req.body;
 
-    if (!validateCustomer(name, phoneNumber, email, address)) {
+    if (!validateFields(name, phoneNumber, email, address, subtotal)) {
       throw Error("invalid customer data");
     }
     const customer = {
@@ -38,7 +38,7 @@ const createOrderRoute = async (
       address,
     };
 
-    const orderId = await createOrder(customer, cart);
+    const orderId = await createOrder(customer, cart, parseInt(subtotal));
     if (orderId === undefined) {
       res.status(500).json({ message: "failed to create order" });
     } else {
@@ -52,24 +52,30 @@ const createOrderRoute = async (
 };
 
 /// Sanity check these fields.
-const validateCustomer = (
+const validateFields = (
   name: unknown,
   phoneNumber: unknown,
   email: unknown,
-  address: unknown
+  address: unknown,
+  subtotal: unknown
 ) => {
-  const check = (s: unknown) =>
-    s !== undefined && typeof s === "string" && s.length > 5;
-  return check(name) && check(phoneNumber) && check(email) && check(address);
+  const check = (s: unknown, len: number) =>
+    s !== undefined && typeof s === "string" && s.length > len;
+  return (
+    check(name, 5) &&
+    check(phoneNumber, 5) &&
+    check(email, 5) &&
+    check(address, 5) &&
+    subtotal !== undefined
+  );
 };
 
 /// Perform some sanity checks on the supplied product ids and quantities.
 const validateCart = (cart: unknown) => {
   if (!(cart && Array.isArray(cart))) return false;
-
   for (let i = 0; i < cart.length; ++i) {
-    if (!(cart[i].id && typeof cart[i].id !== "string")) return false;
-    if (!(cart[i].quantity && typeof cart[i].quantity !== "number"))
+    if (!(cart[i].id && typeof cart[i].id === "number")) return false;
+    if (!(cart[i].quantity && typeof cart[i].quantity === "number"))
       return false;
   }
   return true;
