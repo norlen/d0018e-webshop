@@ -24,8 +24,8 @@ const removeCartRoute = async (
     }
     const { productId } = req.body;
 
-    const item = await removeFromCart(userId, productId);
-    res.status(200).json({ data: item });
+    await removeFromCart(userId, productId);
+    res.status(200).json({});
   } catch (error) {
     const message = (error as Error).message;
     console.error("ERROR removeCartRoute:", message);

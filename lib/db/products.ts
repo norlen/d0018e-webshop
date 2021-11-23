@@ -1,4 +1,4 @@
-import create_client from "./create_client";
+import { getSingleRow, getMultipleRows } from "./connection";
 
 export type Product = {
   id: string;
@@ -28,20 +28,7 @@ export const getProductById = async (
   JOIN producer AS pr on pr.id = p.producer_id 
   WHERE p.id = $1;`;
 
-  const client = create_client();
-  let products = undefined;
-  try {
-    await client.connect();
-    const res = await client.query(sql, [id]);
-    if (res.rows.length > 0) {
-      products = res.rows[0];
-    }
-  } catch (err) {
-    console.error("ERROR getProductById:", err);
-  } finally {
-    await client.end();
-  }
-  return products;
+  return await getSingleRow(sql, [id]);
 };
 
 export const getProductsAll = async (): Promise<Product[]> => {
@@ -58,18 +45,7 @@ export const getProductsAll = async (): Promise<Product[]> => {
     JOIN category AS c on c.id = p.category_id
     JOIN producer AS pr on pr.id = p.producer_id;`;
 
-  const client = create_client();
-  let products = [];
-  try {
-    await client.connect();
-    const res = await client.query(sql);
-    products = res.rows;
-  } catch (err) {
-    console.error("ERROR getProductsAll:", err);
-  } finally {
-    await client.end();
-  }
-  return products;
+  return await getMultipleRows(sql);
 };
 
 export const getProductsByCategory = async (
@@ -90,16 +66,5 @@ export const getProductsByCategory = async (
   WHERE
     c.name = $1;`;
 
-  const client = create_client();
-  let products = [];
-  try {
-    await client.connect();
-    const res = await client.query(sql, [category.toLowerCase()]);
-    products = res.rows;
-  } catch (err) {
-    console.error("ERROR getProductsByCategory:", err);
-  } finally {
-    await client.end();
-  }
-  return products;
+  return await getMultipleRows(sql, [category.toLowerCase()]);
 };

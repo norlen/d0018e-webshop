@@ -1,4 +1,4 @@
-import create_client from "./create_client";
+import { getMultipleRows, run } from "./connection";
 
 export type CartItem = {
   id: string;
@@ -29,25 +29,14 @@ export const getCartByUserId = async (id: string): Promise<CartItem[]> => {
     cart.user_id = $1;
   `;
 
-  const client = create_client();
-  let cart = [];
-  try {
-    await client.connect();
-    const res = await client.query(sql, [id]);
-    cart = res.rows;
-  } catch (err) {
-    console.error(err);
-  } finally {
-    await client.end();
-  }
-  return cart;
+  return await getMultipleRows(sql, [id]);
 };
 
 export const addToCart = async (
   userId: string,
   productId: string,
   quantity: number
-): Promise<undefined> => {
+): Promise<void> => {
   const sql = `
   INSERT INTO cart (
     user_id,
@@ -60,16 +49,9 @@ export const addToCart = async (
     UPDATE SET quantity = cart.quantity + EXCLUDED.quantity;
   `;
 
-  const client = create_client();
-  try {
-    await client.connect();
+  await run(async (client) => {
     await client.query(sql, [userId, productId, quantity]);
-  } catch (err) {
-    console.error(err);
-  } finally {
-    await client.end();
-  }
-  return undefined;
+  });
 };
 
 export const removeFromCart = async (userId: string, productId: string) => {
@@ -80,14 +62,7 @@ export const removeFromCart = async (userId: string, productId: string) => {
     product_id = $2;
   `;
 
-  const client = create_client();
-  try {
-    await client.connect();
+  await run(async (client) => {
     await client.query(sql, [userId, productId]);
-  } catch (err) {
-    console.error(err);
-  } finally {
-    await client.end();
-  }
-  return undefined;
+  });
 };
