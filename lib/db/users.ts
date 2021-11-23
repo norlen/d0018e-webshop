@@ -5,6 +5,7 @@ export type User = {
   email: string;
   name: string;
   password: string;
+  role: string;
 };
 
 export const findUser = async (email: string): Promise<User | undefined> => {
@@ -12,7 +13,8 @@ export const findUser = async (email: string): Promise<User | undefined> => {
   SELECT u.id,
          u.email,
          u.name,
-         u.password
+         u.password,
+         u.role
   FROM users AS u
   WHERE u.email = $1;
   `;

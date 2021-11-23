@@ -70,7 +70,7 @@ const Navigation = () => {
         {user && user.isLoggedIn ? (
           <>
             {/* must wrap this in Link? */}
-            <Link href="/">
+            <Link href="#">
               <a
                 className="text-sm font-medium text-gray-700 hover:text-green-500"
                 onClick={async (e) => {
@@ -86,7 +86,23 @@ const Navigation = () => {
               </a>
             </Link>
             <span className="h-6 w-px bg-gray-200" aria-hidden="true" />
-            <Cart />
+            <div className="flex items-center gap-8">
+              <Link href="/order/orders">
+                <a className="text-sm font-medium text-gray-700 hover:text-green-500">
+                  Beställningar
+                </a>
+              </Link>
+            </div>
+
+            {/* Show cart if customer account*/}
+            {user && user.isAdmin ? (
+              <></>
+            ) : (
+              <>
+                <span className="h-6 w-px bg-gray-200" aria-hidden="true" />
+                <Cart />
+              </>
+            )}
           </>
         ) : (
           <div className="flex items-center gap-8">

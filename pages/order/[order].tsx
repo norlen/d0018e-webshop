@@ -133,7 +133,10 @@ const getServerSidePropsNext: GetServerSideProps = async ({ req, params }) => {
   }
 
   const order = await getOrderById(params.order);
-  if (!order || order.userid !== req.session.user.id) {
+  if (
+    !order ||
+    (order.userid !== req.session.user.id && !req.session.user.isAdmin)
+  ) {
     return { notFound: true };
   }
   const items = await getOrderItems(order.id);

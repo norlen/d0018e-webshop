@@ -28,12 +28,15 @@ const loginRoute = async (req: NextApiRequest, res: NextApiResponse) => {
         "User with that combination of email and password does not exists!"
       );
     }
+    const adminFlag = userData.role === "administrator" ? true : false;
 
     const user = {
       isLoggedIn: true,
+      isAdmin: adminFlag,
       email: userData.email,
       name: userData.name,
       id: userData.id,
+      role: userData.role,
     } as User;
 
     // Save sesssion.

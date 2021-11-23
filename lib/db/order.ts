@@ -24,6 +24,40 @@ export type OrderItem = {
   imageurl: string;
 };
 
+export const getOrdersByUserId = async (userid: string): Promise<Order[]> => {
+  const sql = `
+  SELECT id,
+         order_status AS orderstatus,
+         name,
+         phone_number AS phonenumber,
+         email,
+         address,
+         user_id AS userid,
+         order_status AS status
+  FROM orders
+  WHERE user_id=$1;
+  `;
+
+  return await getMultipleRows(sql, [userid]);
+};
+
+export const getAllOrders = async (): Promise<Order[]> => {
+  const sql = `
+  SELECT id,
+         order_status AS orderstatus,
+         name,
+         phone_number AS phonenumber,
+         email,
+         address,
+         user_id AS userid,
+         order_status AS status
+  FROM orders;
+  `;
+
+  return await getMultipleRows(sql);
+};
+
+
 export const getOrderById = async (id: string): Promise<Order | undefined> => {
   const sql = `
   SELECT id,
@@ -37,6 +71,7 @@ export const getOrderById = async (id: string): Promise<Order | undefined> => {
   FROM orders
   WHERE id = $1;
   `;
+
   return await getSingleRow(sql, [id]);
 };
 
@@ -54,6 +89,7 @@ export const getOrderItems = async (orderId: string): Promise<OrderItem[]> => {
     INNER JOIN producer AS pr ON pr.id = p.producer_id
   WHERE o.order_id = $1;
   `;
+
   return await getMultipleRows(sql, [orderId]);
 };
 
