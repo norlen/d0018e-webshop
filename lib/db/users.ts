@@ -1,4 +1,4 @@
-import createClient from "./createClient";
+import { getSingleRow } from "./connection";
 
 export type User = {
   id: string;
@@ -19,18 +19,5 @@ export const findUser = async (email: string): Promise<User | undefined> => {
   WHERE u.email = $1;
   `;
 
-  const client = createClient();
-  let user = undefined;
-  try {
-    await client.connect();
-    const res = await client.query(sql, [email]);
-    if (res.rows.length > 0) {
-      user = res.rows[0];
-    }
-  } catch (err) {
-    console.error("ERROR findUser:", err);
-  } finally {
-    await client.end();
-  }
-  return user;
+  return await getSingleRow(sql, [email]);
 };

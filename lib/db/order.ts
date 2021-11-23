@@ -1,4 +1,8 @@
-import createClient from "./createClient";
+import {
+  getSingleRow,
+  getMultipleRows,
+  transactionSingleRow,
+} from "./connection";
 
 export type Order = {
   id: string;
@@ -33,23 +37,8 @@ export const getOrdersByUserId = async (userid: string): Promise<Order[]> => {
   FROM orders
   WHERE user_id=$1;
   `;
-  const client = createClient();
-  let orders = [];
-  try {
-    await client.connect();
-    const res = await client.query(sql, [userid]);
-    if (res.rows.length > 0) {
-      orders = res.rows;
-      for (let i = 0; i < orders.length; i++) {
-        orders[i].items = [];
-      }
-    }
-  } catch (err) {
-    console.error("ERROR getAllOrders:", err);
-  } finally {
-    await client.end();
-  }
-  return orders;
+
+  return await getMultipleRows(sql, [userid]);
 };
 
 export const getAllOrders = async (): Promise<Order[]> => {
@@ -64,26 +53,12 @@ export const getAllOrders = async (): Promise<Order[]> => {
          order_status AS status
   FROM orders;
   `;
-  const client = createClient();
-  let orders = [];
-  try {
-    await client.connect();
-    const res = await client.query(sql);
-    if (res.rows.length > 0) {
-      orders = res.rows;
-      for (let i = 0; i < orders.length; i++) {
-        orders[i].items = [];
-      }
-    }
-  } catch (err) {
-    console.error("ERROR getAllOrders:", err);
-  } finally {
-    await client.end();
-  }
-  return orders;
+
+  return await getMultipleRows(sql);
 };
 
-export const getOrderById = async (id: string): Promise<Order> => {
+
+export const getOrderById = async (id: string): Promise<Order | undefined> => {
   const sql = `
   SELECT id,
          order_status AS orderstatus,
@@ -97,21 +72,7 @@ export const getOrderById = async (id: string): Promise<Order> => {
   WHERE id = $1;
   `;
 
-  const client = createClient();
-  let order = undefined;
-  try {
-    await client.connect();
-    const res = await client.query(sql, [id]);
-    if (res.rows.length > 0) {
-      order = res.rows[0];
-      order.items = [];
-    }
-  } catch (err) {
-    console.error("ERROR getOrderById:", err);
-  } finally {
-    await client.end();
-  }
-  return order;
+  return await getSingleRow(sql, [id]);
 };
 
 export const getOrderItems = async (orderId: string): Promise<OrderItem[]> => {
@@ -129,18 +90,7 @@ export const getOrderItems = async (orderId: string): Promise<OrderItem[]> => {
   WHERE o.order_id = $1;
   `;
 
-  const client = createClient();
-  let items = [];
-  try {
-    await client.connect();
-    const res = await client.query(sql, [orderId]);
-    items = res.rows;
-  } catch (err) {
-    console.error("ERROR getitemsById:", err);
-  } finally {
-    await client.end();
-  }
-  return items;
+  return await getMultipleRows(sql, [orderId]);
 };
 
 export type CustomerInfo = {
@@ -198,16 +148,12 @@ export const createOrder = async (
     user_id = $1;
   `;
 
-  let orderId = undefined;
-  const client = createClient();
-  try {
-    await client.connect();
-
-    // To ensure a consistent state, we have to make sure these are all done inside a transaction.
-    //
-    // There's quite a few RTTs here, we could remedy all this by creating a function in the database
-    // which does all of this for us, but let's keep this sane, this is perfectly fine for our use case.
-    await client.query("BEGIN");
+  // To ensure a consistent state, we have to make sure these are all done inside a transaction.
+  //
+  // There's quite a few RTTs here, we could remedy all this by creating a function in the database
+  // which does all of this for us, but let's keep this sane, this is perfectly fine for our use case.
+  return await transactionSingleRow<string>(async (client) => {
+    let orderId = undefined;
 
     // Create actual order.
     const createOrderResponse = await client.query(createOrderSql, [
@@ -244,13 +190,6 @@ export const createOrder = async (
     // are not necessarily in the order. An alternative could be to only remove items we put
     // in the order. But let's keep a clean slate for the customer after an order.
     await client.query(removeCartItemsSql, [customer.id]);
-
-    await client.query("COMMIT");
-  } catch (err) {
-    await client.query("ROLLBACK");
-    console.error(err);
-  } finally {
-    await client.end();
-  }
-  return orderId;
+    return orderId;
+  });
 };

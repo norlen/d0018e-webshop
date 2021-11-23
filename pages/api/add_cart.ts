@@ -2,10 +2,9 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { withIronSessionApiRoute } from "iron-session/next";
 
 import { sessionOptions } from "@lib/session";
-import { CartItem, addToCart } from "@lib/db/cart";
+import { addToCart } from "@lib/db/cart";
 
 type Data = {
-  data?: CartItem;
   message?: string;
 };
 
@@ -25,7 +24,7 @@ const getCartRoute = async (
     const { productId, quantity } = req.body;
 
     const item = await addToCart(userId, productId, quantity);
-    res.status(200).json({ data: item });
+    res.status(200).json({});
   } catch (error) {
     const message = (error as Error).message;
     console.error("ERROR getCartRoute:", message);
