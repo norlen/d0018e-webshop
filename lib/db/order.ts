@@ -1,4 +1,4 @@
-import create_client from "./create_client";
+import createClient from "./createClient";
 
 export type Order = {
   id: string;
@@ -20,6 +20,69 @@ export type OrderItem = {
   imageurl: string;
 };
 
+export const getOrdersByUserId = async (userid: string): Promise<Order[]> => {
+  const sql = `
+  SELECT id,
+         order_status AS orderstatus,
+         name,
+         phone_number AS phonenumber,
+         email,
+         address,
+         user_id AS userid,
+         order_status AS status
+  FROM orders
+  WHERE user_id=$1;
+  `;
+  const client = createClient();
+  let orders = [];
+  try {
+    await client.connect();
+    const res = await client.query(sql, [userid]);
+    if (res.rows.length > 0) {
+      orders = res.rows;
+      for (let i = 0; i < orders.length; i++) {
+        orders[i].items = [];
+      }
+    }
+  } catch (err) {
+    console.error("ERROR getAllOrders:", err);
+  } finally {
+    await client.end();
+  }
+  return orders;
+};
+
+export const getAllOrders = async (): Promise<Order[]> => {
+  const sql = `
+  SELECT id,
+         order_status AS orderstatus,
+         name,
+         phone_number AS phonenumber,
+         email,
+         address,
+         user_id AS userid,
+         order_status AS status
+  FROM orders;
+  `;
+  const client = createClient();
+  let orders = [];
+  try {
+    await client.connect();
+    const res = await client.query(sql);
+    if (res.rows.length > 0) {
+      orders = res.rows;
+      for (let i = 0; i < orders.length; i++) {
+        orders[i].items = [];
+      }
+    }
+  } catch (err) {
+    console.error("ERROR getAllOrders:", err);
+  } finally {
+    await client.end();
+  }
+  return orders;
+};
+
 export const getOrderById = async (id: string): Promise<Order> => {
   const sql = `
   SELECT id,
@@ -34,7 +97,7 @@ export const getOrderById = async (id: string): Promise<Order> => {
   WHERE id = $1;
   `;
 
-  const client = create_client();
+  const client = createClient();
   let order = undefined;
   try {
     await client.connect();
@@ -66,7 +129,7 @@ export const getOrderItems = async (orderId: string): Promise<OrderItem[]> => {
   WHERE o.order_id = $1;
   `;
 
-  const client = create_client();
+  const client = createClient();
   let items = [];
   try {
     await client.connect();
@@ -136,7 +199,7 @@ export const createOrder = async (
   `;
 
   let orderId = undefined;
-  const client = create_client();
+  const client = createClient();
   try {
     await client.connect();
 

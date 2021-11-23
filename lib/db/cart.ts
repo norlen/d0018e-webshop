@@ -1,4 +1,4 @@
-import create_client from "./create_client";
+import createClient from "./createClient";
 
 export type CartItem = {
   id: string;
@@ -29,7 +29,7 @@ export const getCartByUserId = async (id: string): Promise<CartItem[]> => {
     cart.user_id = $1;
   `;
 
-  const client = create_client();
+  const client = createClient();
   let cart = [];
   try {
     await client.connect();
@@ -60,7 +60,7 @@ export const addToCart = async (
     UPDATE SET quantity = cart.quantity + EXCLUDED.quantity;
   `;
 
-  const client = create_client();
+  const client = createClient();
   try {
     await client.connect();
     await client.query(sql, [userId, productId, quantity]);
@@ -80,7 +80,7 @@ export const removeFromCart = async (userId: string, productId: string) => {
     product_id = $2;
   `;
 
-  const client = create_client();
+  const client = createClient();
   try {
     await client.connect();
     await client.query(sql, [userId, productId]);

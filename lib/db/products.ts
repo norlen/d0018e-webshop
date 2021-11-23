@@ -1,4 +1,4 @@
-import create_client from "./create_client";
+import createClient from "./createClient";
 
 export type Product = {
   id: string;
@@ -28,7 +28,7 @@ export const getProductById = async (
   JOIN producer AS pr on pr.id = p.producer_id 
   WHERE p.id = $1;`;
 
-  const client = create_client();
+  const client = createClient();
   let products = undefined;
   try {
     await client.connect();
@@ -58,7 +58,7 @@ export const getProductsAll = async (): Promise<Product[]> => {
     JOIN category AS c on c.id = p.category_id
     JOIN producer AS pr on pr.id = p.producer_id;`;
 
-  const client = create_client();
+  const client = createClient();
   let products = [];
   try {
     await client.connect();
@@ -90,7 +90,7 @@ export const getProductsByCategory = async (
   WHERE
     c.name = $1;`;
 
-  const client = create_client();
+  const client = createClient();
   let products = [];
   try {
     await client.connect();
