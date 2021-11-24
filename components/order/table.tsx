@@ -51,7 +51,7 @@ const Table = ({ data }: any) => {
                           <div className="flex-shrink-0 h-10 w-10">
                             <img
                               className="h-10 w-10 rounded-full"
-                              src="/images/Logo_small.jpeg"
+                              src="/images/profile-default.jpeg"
                               alt=""
                             />
                           </div>
