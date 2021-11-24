@@ -2,6 +2,7 @@ import {
   getSingleRow,
   getMultipleRows,
   transactionSingleRow,
+  run,
 } from "./connection";
 
 export type Order = {
@@ -41,6 +42,34 @@ export const getOrdersByUserId = async (userid: string): Promise<Order[]> => {
   return await getMultipleRows(sql, [userid]);
 };
 
+export const changeOrderStatus = async (
+  orderStatus: number,
+  orderId: string
+) => {
+  const sql = `
+  UPDATE Orders
+  SET order_status = $1
+  WHERE id = $2;`;
+  await run(async (client) => {
+    await client.query(sql, [orderStatus, orderId]);
+  });
+};
+
+/* 
+export const removeFromCart = async (userId: string, productId: string) => {
+  const sql = `
+  DELETE FROM cart
+  WHERE
+    user_id = $1 AND
+    product_id = $2;
+  `;
+
+  await run(async (client) => {
+    await client.query(sql, [userId, productId]);
+  });
+};
+*/
+
 export const getAllOrders = async (): Promise<Order[]> => {
   const sql = `
   SELECT id,
@@ -56,7 +85,6 @@ export const getAllOrders = async (): Promise<Order[]> => {
 
   return await getMultipleRows(sql);
 };
-
 
 export const getOrderById = async (id: string): Promise<Order | undefined> => {
   const sql = `

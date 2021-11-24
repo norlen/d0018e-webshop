@@ -1,17 +1,10 @@
-const getOrderStatusName = (status: number) => {
-  switch (status) {
-    case 0:
-      return "Hanterar";
-    case 1:
-      return "Packar";
-    case 2:
-      return "På väg";
-    case 3:
-      return "Levererad";
-  }
-};
+import { useUser } from "@lib/hooks";
+import { getOrderStatusName } from "@lib/util";
+import Select from "@components/order/selectStatus";
 
 const Table = ({ data }: any) => {
+  const { user } = useUser();
+
   return (
     <>
       <div className="flex flex-col">
@@ -52,7 +45,7 @@ const Table = ({ data }: any) => {
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {data.map((item: any) => (
-                    <tr key={item.name}>
+                    <tr key={item.id}>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
                           <div className="flex-shrink-0 h-10 w-10">
@@ -81,9 +74,16 @@ const Table = ({ data }: any) => {
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                          {getOrderStatusName(item.status)}
-                        </span>
+                        {user && user.isAdmin ? (
+                          <Select
+                            currentStatus={item.status}
+                            orderId={item.id}
+                          />
+                        ) : (
+                          <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                            {getOrderStatusName(item.status)}
+                          </span>
+                        )}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {item.userid}

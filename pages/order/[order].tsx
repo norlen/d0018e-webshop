@@ -7,22 +7,10 @@ import { sessionOptions } from "@lib/session";
 
 import type { NextPage } from "next";
 import { getOrderById, getOrderItems, Order, OrderItem } from "@lib/db";
+import { getOrderStatusName } from "@lib/util";
 
 type SSRProps = {
   order: Order;
-};
-
-const getOrderStatusName = (status: number) => {
-  switch (status) {
-    case 0:
-      return "Hanterar";
-    case 1:
-      return "Packar";
-    case 2:
-      return "På väg";
-    case 3:
-      return "Levererad";
-  }
 };
 
 const ProductPage: NextPage<SSRProps> = ({ order }) => {
