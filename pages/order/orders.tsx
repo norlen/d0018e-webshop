@@ -26,7 +26,7 @@ const OrderPage: NextPage<SSRProps> = ({ orders }) => {
   );
 };
 
-const getServerSidePropsNext: GetServerSideProps = async ({ req, params }) => {
+const getServerSidePropsNext: GetServerSideProps = async ({ req }) => {
   if (!(req.session.user && req.session.user.id)) {
     return { notFound: true };
   }
