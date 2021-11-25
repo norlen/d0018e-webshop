@@ -22,7 +22,6 @@ const getCartRoute = async (
       throw Error("invalid product id or quantity");
     }
     const { productId, quantity } = req.body;
-    //console.log(userId, productId, quantity, "I ADD CART HEEEJ");
     const item = await addToCart(userId, productId, quantity);
     res.status(200).json({});
   } catch (error) {
