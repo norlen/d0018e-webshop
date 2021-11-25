@@ -55,7 +55,6 @@ export const changeOrderStatus = async (
   });
 };
 
-/* 
 export const removeFromCart = async (userId: string, productId: string) => {
   const sql = `
   DELETE FROM cart
@@ -68,7 +67,6 @@ export const removeFromCart = async (userId: string, productId: string) => {
     await client.query(sql, [userId, productId]);
   });
 };
-*/
 
 export const getAllOrders = async (): Promise<Order[]> => {
   const sql = `
