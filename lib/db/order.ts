@@ -55,19 +55,6 @@ export const changeOrderStatus = async (
   });
 };
 
-export const removeFromCart = async (userId: string, productId: string) => {
-  const sql = `
-  DELETE FROM cart
-  WHERE
-    user_id = $1 AND
-    product_id = $2;
-  `;
-
-  await run(async (client) => {
-    await client.query(sql, [userId, productId]);
-  });
-};
-
 export const getAllOrders = async (): Promise<Order[]> => {
   const sql = `
   SELECT id,
