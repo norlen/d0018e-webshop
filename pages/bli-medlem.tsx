@@ -1,7 +1,7 @@
 import { NextPage } from "next";
 import Head from "next/head";
 
-import RegisterPage from "@components/user/register_page";
+import RegisterPage from "@components/user/registerPage";
 
 const MemberPage: NextPage = () => {
   return (

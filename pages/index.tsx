@@ -1,7 +1,7 @@
 import { GetStaticProps } from "next";
 import Head from "next/head";
 
-import ProductSmall from "@components/products/product_small";
+import ProductSmall from "@components/products/productSmall";
 
 import type { NextPage } from "next";
 
