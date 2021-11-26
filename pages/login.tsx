@@ -79,7 +79,7 @@ const LoginPage: NextPage = () => {
 
           <p>
             Har du inget konto?
-            <Link href="#">
+            <Link href="/bli-medlem">
               <a className="ml-2 text-green-500 font-medium hover:text-green-700">
                 Bli medlem
               </a>
