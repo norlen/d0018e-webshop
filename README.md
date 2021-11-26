@@ -35,3 +35,18 @@ npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+## Self-hosting
+
+To self host the server we run
+
+```bash
+npm i                               # Install dependencies
+npm i sharp                         # For image conversion
+npm run build                       # Build optimized production build
+npx db-migrate up                   # Run database migrations
+psql -d shop -a -f ./db-data.sql    # Add sample data to database.
+
+# Start the server using pm2.
+NODE_ENV=production pm2 start "npm run start" --name "web server" --cron-restart="0 3 * * *" --max-memory-restart 2048M
+```
