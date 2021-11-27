@@ -45,8 +45,10 @@ const BuyButton = ({ productID }: Props) => {
           )}
         </button>
       ) : user && user.isAdmin ? (
-        <button className="py-2 px-4 rounded-md shadow-md bg-green-300 hover:bg-green-500 todohover:bg-green-500 disabled cursor-not-allowed">
-          <a>Köp 1 kg</a>
+        <button className="py-2 px-4 rounded-md shadow-md bg-green-300 hover:bg-green-500">
+          <Link href={`/produkt/${productID}`}>
+            <a>Edit product</a>
+          </Link>
         </button>
       ) : (
         <button className="py-2 px-4 rounded-md shadow-md bg-green-300 hover:bg-green-500">
