@@ -33,10 +33,10 @@ export const useChangeProduct = () => {
       const response = await fetch(url, options);
       const data = await response.json();
       setLoading(false);
-
       if (!response.ok) {
         setError(data.message);
       }
+      return data.succesfulUpdate;
     } catch (err) {
       setError((err as Error).message);
     }
