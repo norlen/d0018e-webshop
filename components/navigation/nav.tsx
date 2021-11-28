@@ -49,7 +49,7 @@ const Navigation = () => {
           <Image
             height={32}
             width={32}
-            src="/images/Logo_small.png"
+            src="/images/Logo_small.jpeg"
             alt="Home"
           />
         </a>

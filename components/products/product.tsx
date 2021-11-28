@@ -22,6 +22,7 @@ const ProductC = ({ product }: Props) => {
   const { user } = useUser();
   const { loading, error, changeProduct } = useChangeProduct();
 
+  const [updateError, setUpdateError] = useState("");
   const [name, setName] = useState(product.name);
   const [quantity, setQuantity] = useState(product.quantity.toString());
   const [description, setDescription] = useState(product.description);
@@ -32,9 +33,17 @@ const ProductC = ({ product }: Props) => {
   const onSubmit = async (e: any) => {
     e.preventDefault();
     if (!canSubmit) return;
-    // db call TODO return some result if item was updated or not?
-    await changeProduct(product.id, name, quantity, description, price);
-    // Todo check if the update was successful
+    const res = await changeProduct(
+      product.id,
+      name,
+      quantity,
+      description,
+      price
+    );
+    setUpdateError("Kunde inte updatera produkten, försök igen.");
+    if (res) {
+      setUpdateError("");
+    }
   };
 
   return user && user?.isAdmin ? (
@@ -107,9 +116,9 @@ const ProductC = ({ product }: Props) => {
             >
               {loading ? "Updaterar produkt..." : "Spara produkt"}
             </button>
-            {error && (
+            {updateError && (
               <span className="bg-red-200 rounded-md text-center py-1 text-sm border-red-500 border mt-2 w-full">
-                {error}
+                {updateError}
               </span>
             )}
           </form>

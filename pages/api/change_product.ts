@@ -17,8 +17,14 @@ const changeOrderRoute = async (req: NextApiRequest, res: NextApiResponse) => {
       throw Error("Invalid product information");
     }
 
-    await updateProduct(id, name, quantity, description, price);
-    res.status(200).json({});
+    const succesfulUpdate = await updateProduct(
+      id,
+      name,
+      quantity,
+      description,
+      price
+    );
+    res.status(200).json({ succesfulUpdate });
   } catch (error) {
     res.status(500).json({ message: (error as Error).message });
   }
