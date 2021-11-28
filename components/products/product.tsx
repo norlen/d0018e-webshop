@@ -1,12 +1,15 @@
+import { useUser } from "@lib/hooks";
+import useChangeProduct from "@lib/hooks/useChangeProduct";
 import Image from "next/image";
-import Link from "next/link";
-import { useAddToCart, useUser } from "@lib/hooks";
+import { useState } from "react";
+import BuyButton from "./buyButton";
 
 type Props = {
   product: {
     id: string;
     name: string;
     category: string;
+    quantity: string;
     producer: string;
     description: string;
     price: string;
@@ -15,11 +18,115 @@ type Props = {
 };
 
 const ProductC = ({ product }: Props) => {
-  const { loading, error, addToCart } = useAddToCart();
-  const { user } = useUser();
   // TODO: Global flash for errors.
+  const { user } = useUser();
+  const { loading, error, changeProduct } = useChangeProduct();
 
-  return (
+  const [updateError, setUpdateError] = useState("");
+  const [name, setName] = useState(product.name);
+  const [quantity, setQuantity] = useState(product.quantity.toString());
+  const [description, setDescription] = useState(product.description);
+  const [price, setPrice] = useState(product.price.toString());
+
+  const canSubmit = name.length > 1 && quantity.length > 0 && price.length > 0;
+
+  const onSubmit = async (e: any) => {
+    e.preventDefault();
+    if (!canSubmit) return;
+    const res = await changeProduct(
+      product.id,
+      name,
+      quantity,
+      description,
+      price
+    );
+    setUpdateError("Kunde inte updatera produkten, försök igen.");
+    if (res) {
+      setUpdateError("");
+    }
+  };
+
+  return user && user?.isAdmin ? (
+    // if admin is logged in
+    <main className="flex px-12 py-4 lg:py-8">
+      <div className="w-96 h-100 rounded-l-lg overflow-hidden relative">
+        <Image
+          src={product.image_url}
+          alt={product.name}
+          layout="fill"
+          className="w-full h-full object-center object-cover"
+        />
+      </div>
+      <div className="flex flex-col items-center gap-4">
+        <div className="flex flex-col gap-4 rounded p-6 w-96 md:shadow-lg bg-white">
+          <form onSubmit={onSubmit}>
+            <div className="relative w-full mb-3">
+              <span>Produkt namn</span>
+              <input
+                type="text"
+                className="input w-full rounded-lg px-4 py-2 border border-gray-500 focus:outline-none focus:border-green-500 active:outline-none autofocus"
+                placeholder="Namn"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+            </div>
+
+            <div className="relative w-full mb-3">
+              <span>Antal</span>
+              <input
+                type="number"
+                min="0"
+                className="input w-full rounded-lg px-4 py-2 border border-gray-500 focus:outline-none focus:border-green-500 active:outline-none"
+                placeholder="Antal"
+                value={quantity}
+                onChange={(e) => setQuantity(e.target.value)}
+              />
+            </div>
+
+            <div className="relative w-full mb-3">
+              <span>Beskrivning</span>
+              <input
+                type="text"
+                className="input w-full rounded-lg px-4 py-2 border border-gray-500 focus:outline-none focus:border-green-500 active:outline-none"
+                placeholder="Beskrivning"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+              />
+            </div>
+
+            <div className="relative w-full mb-3">
+              <span>Pris</span>
+              <input
+                type="number"
+                min="0"
+                className="input w-full rounded-lg px-4 py-2 border border-gray-500 focus:outline-none focus:border-green-500 active:outline-none"
+                placeholder="Pris"
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
+              />
+            </div>
+
+            <button
+              className={`w-full text-center bg-green-500 hover:bg-green-700 rounded-lg text-white py-2 px-4 font-medium ${
+                loading || !canSubmit
+                  ? "disable opacity-50 hover:bg-green-500"
+                  : ""
+              } ${!canSubmit && "cursor-not-allowed"}`}
+              disabled={loading || !canSubmit}
+            >
+              {loading ? "Updaterar produkt..." : "Spara produkt"}
+            </button>
+            {updateError && (
+              <span className="bg-red-200 rounded-md text-center py-1 text-sm border-red-500 border mt-2 w-full">
+                {updateError}
+              </span>
+            )}
+          </form>
+        </div>
+      </div>
+    </main>
+  ) : (
+    // if customer is logged in
     <div className="flex gap-4 bg-white rounded-lg">
       <div className="w-96 h-96 rounded-l-lg overflow-hidden relative">
         <Image
@@ -43,45 +150,7 @@ const ProductC = ({ product }: Props) => {
           <p className="">
             Pris: <span className="font-medium">{product.price} kr/kg</span>
           </p>
-          {user && user.isLoggedIn ? (
-            <button
-              className={`py-2 px-4 rounded-md shadow-md bg-green-300 hover:bg-green-500 w-24 h-10 ${
-                loading ? "disabled opacity-50" : ""
-              }`}
-              onClick={() => addToCart(product.id, 1)}
-            >
-              {loading ? (
-                <svg
-                  className={`animate-spin h-5 w-5 mx-auto text-white`}
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  ></circle>
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  ></path>
-                </svg>
-              ) : (
-                <>Köp 1 kg</>
-              )}
-            </button>
-          ) : (
-            <button className="py-2 px-4 rounded-md shadow-md bg-green-300 hover:bg-green-500">
-              <Link href="/login">
-                <a>Köp 1 kg</a>
-              </Link>
-            </button>
-          )}
+          <BuyButton productID={product.id} />
         </div>
       </div>
     </div>

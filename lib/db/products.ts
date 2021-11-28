@@ -1,4 +1,4 @@
-import { getSingleRow, getMultipleRows } from "./connection";
+import { getSingleRow, getMultipleRows, run } from "./connection";
 
 export type Product = {
   id: string;
@@ -9,6 +9,36 @@ export type Product = {
   image_url: string;
   category: string;
   producer: string;
+};
+
+// returns boolean to indicate if an update was made or not.
+export const updateProduct = async (
+  id: string,
+  name: string,
+  quantity: string,
+  description: string,
+  price: string
+) => {
+  const sql = `
+    UPDATE Products
+    SET name = $1, quantity = $2, price = $3, description = $4
+    WHERE id = $5
+    RETURNING id;
+    `;
+  let successfulUpdate: boolean = false;
+  const result = await run(async (client) => {
+    const res = await client.query(sql, [
+      name,
+      quantity,
+      price,
+      description,
+      id,
+    ]);
+    if (res.rows[0] != undefined) {
+      successfulUpdate = true;
+    }
+  });
+  return successfulUpdate;
 };
 
 export const getProductById = async (
