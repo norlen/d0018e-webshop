@@ -2,7 +2,7 @@ import useSWR from "swr";
 import { CartItem } from "@lib/db";
 import { fetcher } from "@lib/util";
 
-type CartRequest = {
+export type CartRequest = {
   data: CartItem[];
 };
 

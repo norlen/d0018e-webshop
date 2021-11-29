@@ -50,3 +50,9 @@ export const ApiInternalError = () =>
 
 export const AdminRequiredError = () =>
   new ApiError(-1, "administrator is required to perform this operation");
+
+export const UserDoesNotExistError = () =>
+  new ApiError(
+    -1,
+    "user with that combination of email and password does not exists"
+  );

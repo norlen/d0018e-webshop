@@ -1,13 +1,13 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { withIronSessionApiRoute } from "iron-session/next";
 import { sessionOptions } from "@lib/session";
-import { getCartByUserId } from "@lib/db";
+import { CartItem, getCartByUserId } from "@lib/db";
 import { ApiResponse, getAuth, writeErrorResponse } from "@lib/api";
 
 /// Gets a user's cart.
 const cartGetRoute = async (
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponse<any>>
+  res: NextApiResponse<ApiResponse<CartItem[]>>
 ) => {
   try {
     const userId = getAuth(req).id;

@@ -10,7 +10,7 @@ import {
 } from "@lib/api";
 import Joi from "joi";
 
-const changeOrderSchema = Joi.object({
+const schema = Joi.object({
   orderId: Joi.number().min(0).required(),
   newOrderStatus: Joi.number().min(0).max(5).required(),
 });
@@ -27,12 +27,10 @@ const orderUpdateRoute = async (
       throw AdminRequiredError();
     }
 
-    const { orderId, newOrderStatus } = await changeOrderSchema.validateAsync(
-      req.body
-    );
+    const { orderId, newOrderStatus } = await schema.validateAsync(req.body);
     await changeOrderStatus(newOrderStatus, orderId);
 
-    res.status(200).json({});
+    res.status(200).json({ data: undefined });
   } catch (error) {
     writeErrorResponse(res, error as Error);
   }

@@ -2,7 +2,12 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { withIronSessionApiRoute } from "iron-session/next";
 import { sessionOptions } from "@lib/session";
 import { createOrder } from "@lib/db";
-import { ApiResponse, writeErrorResponse, getAuth } from "@lib/api";
+import {
+  ApiResponse,
+  writeErrorResponse,
+  getAuth,
+  ApiInternalError,
+} from "@lib/api";
 import Joi from "joi";
 
 type CreateOrderResponse = {
@@ -60,10 +65,10 @@ const orderAddRoute = async (
 
     const orderId = await createOrder(customer, cart, subtotal);
     if (orderId === undefined) {
-      res.status(500).json({ message: "failed to create order" });
-    } else {
-      res.status(200).json({ data: { orderId } });
+      throw ApiInternalError();
     }
+
+    res.status(200).json({ data: { orderId } });
   } catch (error) {
     writeErrorResponse(res, error as Error);
   }

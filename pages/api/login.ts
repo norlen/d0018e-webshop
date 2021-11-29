@@ -2,7 +2,7 @@ import { withIronSessionApiRoute } from "iron-session/next";
 import { sessionOptions } from "lib/session";
 import { NextApiRequest, NextApiResponse } from "next";
 import { findUser } from "@lib/db/users";
-import { ApiError, writeErrorResponse } from "@lib/api";
+import { UserDoesNotExistError, writeErrorResponse } from "@lib/api";
 import bcrypt from "bcrypt";
 import Joi from "joi";
 import type { User } from "./user";
@@ -12,16 +12,9 @@ const schema = Joi.object({
   password: Joi.string().normalize().min(5).max(100),
 });
 
-const UserDoesNotExistError = () =>
-  new ApiError(
-    -1,
-    "user with that combination of email and password does not exists"
-  );
-
 const loginRoute = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const { email, password } = await schema.validateAsync(req.body);
-
     const userData = await findUser(email);
 
     // Check that the user exists and that the passwords match.
@@ -42,7 +35,7 @@ const loginRoute = async (req: NextApiRequest, res: NextApiResponse) => {
     // Save sesssion.
     req.session.user = user;
     await req.session.save();
-    res.json(user);
+    res.status(200).json(user);
   } catch (error) {
     writeErrorResponse(res, error as Error);
   }

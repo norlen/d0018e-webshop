@@ -19,6 +19,7 @@ const cartRemoveRoute = async (
 
     const { productId } = await deleteSchema.validateAsync(req.body);
     await removeFromCart(userId, productId);
+    res.status(200).json({ data: undefined });
   } catch (error) {
     writeErrorResponse(res, error as Error);
   }

@@ -1,12 +1,5 @@
 import { useState } from "react";
 import { useSignup, useUser } from "@lib/hooks";
-import { User } from "pages/api/user";
-
-type SignupArgs = {
-  email: string;
-  name: string;
-  password: string;
-};
 
 const RegisterPage = () => {
   // Redirect if already signed in.

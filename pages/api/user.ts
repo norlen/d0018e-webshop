@@ -10,22 +10,26 @@ export type User = {
   id: string;
 };
 
+const emptyUser = {
+  isLoggedIn: false,
+  isAdmin: false,
+  email: "",
+  name: "",
+  id: "",
+};
+
 const userRoute = async (req: NextApiRequest, res: NextApiResponse<User>) => {
   if (req.session.user) {
-    res.json({
+    const user = {
       ...req.session.user,
       isLoggedIn: true,
       isAdmin: req.session.user.isAdmin,
       name: req.session.user.name,
-    });
+    };
+
+    res.status(200).json(user);
   } else {
-    res.json({
-      isLoggedIn: false,
-      isAdmin: false,
-      email: "",
-      name: "",
-      id: "",
-    });
+    res.status(200).json(emptyUser);
   }
 };
 
