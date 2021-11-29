@@ -27,7 +27,12 @@ const ProductC = ({ product }: Props) => {
   const [description, setDescription] = useState(product.description);
   const [price, setPrice] = useState(product.price.toString());
 
-  const canSubmit = name.length > 1 && quantity.length > 0 && price.length > 0;
+  const canSubmit =
+    name.length > 1 &&
+    name.length < 100 &&
+    description.length < 500 &&
+    quantity.length > 0 &&
+    price.length > 0;
 
   const onSubmit = async (e: any) => {
     e.preventDefault();
@@ -53,6 +58,7 @@ const ProductC = ({ product }: Props) => {
           className="w-full h-full object-center object-cover"
         />
       </div>
+
       <div className="flex flex-col items-center gap-4">
         <div className="flex flex-col gap-4 rounded p-6 w-96 md:shadow-lg bg-white">
           <form onSubmit={onSubmit}>
