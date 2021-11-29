@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 
 import { useUser, useLogin } from "@lib/hooks";
+import Error from "@components/error/error";
 
 const LoginPage: NextPage = () => {
   const { mutateUser } = useUser({
@@ -63,11 +64,7 @@ const LoginPage: NextPage = () => {
               >
                 {loading ? "Loggar in..." : "Logga in"}
               </button>
-              {error && (
-                <span className="bg-red-200 rounded-md text-center py-1 text-sm border-red-500 border">
-                  {error}
-                </span>
-              )}
+              <Error message={error} />
               {/* <Link href="#">
                   <a className="font-medium text-green-500 hover:text-green-700 mx-auto">
                     Glömt lösenord?

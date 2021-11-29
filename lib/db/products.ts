@@ -25,8 +25,9 @@ export const updateProduct = async (
     WHERE id = $5
     RETURNING id;
     `;
+
   let successfulUpdate: boolean = false;
-  const result = await run(async (client) => {
+  await run(async (client) => {
     const res = await client.query(sql, [
       name,
       quantity,

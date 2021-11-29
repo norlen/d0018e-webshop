@@ -18,10 +18,10 @@ const createOrderSchema = Joi.object({
   name: Joi.string().normalize().min(5).max(100).required(),
   email: Joi.string().email().required(),
   phoneNumber: Joi.string()
-    .regex(/^([+]46|0)\d{9}$/gi)
+    .regex(/^([+]46|0)\d{9}$/)
     .required(),
   address: Joi.string().normalize().min(5).max(100).required(),
-  postalCode: Joi.string().regex(/\d{5}/gi).required(),
+  postalCode: Joi.string().regex(/\d{5}/).required(),
   city: Joi.string().normalize().min(1).max(100).required(),
   subtotal: Joi.number().min(1),
   cart: Joi.array()
@@ -68,7 +68,7 @@ const orderAddRoute = async (
       throw ApiInternalError();
     }
 
-    res.status(200).json({ data: { orderId } });
+    res.status(200).json({ success: true, data: { orderId } });
   } catch (error) {
     writeErrorResponse(res, error as Error);
   }

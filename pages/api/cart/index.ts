@@ -12,7 +12,7 @@ const cartGetRoute = async (
   try {
     const userId = getAuth(req).id;
     const cart = await getCartByUserId(userId);
-    res.status(200).json({ data: cart });
+    res.status(200).json({ success: true, data: cart });
   } catch (error) {
     writeErrorResponse(res, error as Error);
   }

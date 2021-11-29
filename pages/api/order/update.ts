@@ -30,7 +30,7 @@ const orderUpdateRoute = async (
     const { orderId, newOrderStatus } = await schema.validateAsync(req.body);
     await changeOrderStatus(newOrderStatus, orderId);
 
-    res.status(200).json({ data: undefined });
+    res.status(200).json({ success: true });
   } catch (error) {
     writeErrorResponse(res, error as Error);
   }

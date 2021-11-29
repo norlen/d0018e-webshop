@@ -25,7 +25,7 @@ const cartAddRoute = async (
       quantity: req.body.quantity,
     });
     await addToCart(userId, productId, quantity);
-    res.status(200).json({ data: undefined });
+    res.status(200).json({ success: true });
   } catch (error) {
     writeErrorResponse(res, error as Error);
   }

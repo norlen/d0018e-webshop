@@ -6,13 +6,10 @@ import {
   ApiResponse,
   getAuth,
   AdminRequiredError,
+  ApiInternalError,
 } from "@lib/api";
 import Joi from "joi";
 import { updateProduct } from "@lib/db";
-
-type ProductUpdateResponse = {
-  success: boolean;
-};
 
 const schema = Joi.object({
   id: Joi.number().min(0).required(),
@@ -27,7 +24,7 @@ const schema = Joi.object({
 /// Administrator privileges is required to call this.
 const productUpdateRoute = async (
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponse<ProductUpdateResponse>>
+  res: NextApiResponse<ApiResponse<void>>
 ) => {
   try {
     if (!getAuth(req).isAdmin) {
@@ -38,7 +35,11 @@ const productUpdateRoute = async (
       await schema.validateAsync(req.body);
 
     const success = await updateProduct(id, name, quantity, description, price);
-    res.status(200).json({ data: { success } });
+    if (!success) {
+      throw ApiInternalError();
+    }
+
+    res.status(200).json({ success: true });
   } catch (error) {
     writeErrorResponse(res, error as Error);
   }

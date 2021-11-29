@@ -146,7 +146,7 @@ const ProductC = ({ product }: Props) => {
           <p className="">
             Pris: <span className="font-medium">{product.price} kr/kg</span>
           </p>
-          <BuyButton productId={product.id} />
+          <BuyButton productId={product.id} user={user} />
         </div>
       </div>
     </div>

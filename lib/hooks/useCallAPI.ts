@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { mapError } from "@lib/errorCodes";
 
 type UseCallAPIResp<T, U> = {
   loading: boolean;
@@ -26,7 +27,8 @@ export const useCallAPI = <T, U>(url: string): UseCallAPIResp<T, U> => {
       setLoading(false);
 
       if (!response.ok) {
-        setError(json.message);
+        console.log("Got error from API", json);
+        setError(mapError(json.code, json.message));
       }
 
       return json.data;

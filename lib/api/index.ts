@@ -1,13 +1,16 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { ValidationError } from "joi";
+import * as errorCodes from "@lib/errorCodes";
 
 export type ApiResponse<T> = {
+  success: boolean;
   data?: T;
   code?: number;
   message?: string;
 };
 
 export const createErrorResponse = (code: number, message: string) => ({
+  success: false,
   code,
   message,
 });
@@ -21,7 +24,7 @@ export class ApiError extends Error {
   }
 
   createErrorResponse() {
-    return { code: this.code, message: this.message };
+    return { success: false, code: this.code, message: this.message };
   }
 }
 
@@ -46,13 +49,22 @@ export const writeErrorResponse = <T>(
 };
 
 export const ApiInternalError = () =>
-  new ApiError(500, "internal server error");
+  new ApiError(errorCodes.INTERNAL_ERROR, "internal server error");
 
 export const AdminRequiredError = () =>
-  new ApiError(-1, "administrator is required to perform this operation");
+  new ApiError(
+    errorCodes.ADMIN_REQUIRED,
+    "administrator is required to perform this operation"
+  );
 
 export const UserDoesNotExistError = () =>
   new ApiError(
-    -1,
+    errorCodes.WRONG_LOGIN_INFO,
     "user with that combination of email and password does not exists"
+  );
+
+export const UserAlreadyExistsError = () =>
+  new ApiError(
+    errorCodes.USER_ALREADY_EXISTS,
+    "user with that email already exists"
   );

@@ -2,7 +2,12 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { findUser, addUser } from "@lib/db/users";
 import { sessionOptions } from "lib/session";
 import { withIronSessionApiRoute } from "iron-session/next";
-import { ApiInternalError, writeErrorResponse } from "@lib/api";
+import {
+  ApiInternalError,
+  ApiResponse,
+  UserAlreadyExistsError,
+  writeErrorResponse,
+} from "@lib/api";
 import bcrypt from "bcrypt";
 import Joi from "joi";
 
@@ -14,13 +19,16 @@ const schema = Joi.object({
   password: Joi.string().normalize().min(5).max(100).required(),
 });
 
-const signupRoute = async (req: NextApiRequest, res: NextApiResponse) => {
+const signupRoute = async (
+  req: NextApiRequest,
+  res: NextApiResponse<ApiResponse<User>>
+) => {
   try {
     const { email, name, password } = await schema.validateAsync(req.body);
 
     // Check if this user already exists.
     if ((await findUser(email)) !== undefined) {
-      throw Error("Användare med den mailen existerar redan");
+      throw UserAlreadyExistsError();
     }
 
     // Hash password and create the user.
@@ -45,7 +53,7 @@ const signupRoute = async (req: NextApiRequest, res: NextApiResponse) => {
     // Save sesssion.
     req.session.user = user;
     await req.session.save();
-    res.status(200).json(user);
+    res.status(200).json({ success: true, data: user });
   } catch (error) {
     writeErrorResponse(res, error as Error);
   }

@@ -2,7 +2,11 @@ import { withIronSessionApiRoute } from "iron-session/next";
 import { sessionOptions } from "lib/session";
 import { NextApiRequest, NextApiResponse } from "next";
 import { findUser } from "@lib/db/users";
-import { UserDoesNotExistError, writeErrorResponse } from "@lib/api";
+import {
+  ApiResponse,
+  UserDoesNotExistError,
+  writeErrorResponse,
+} from "@lib/api";
 import bcrypt from "bcrypt";
 import Joi from "joi";
 import type { User } from "./user";
@@ -12,7 +16,10 @@ const schema = Joi.object({
   password: Joi.string().normalize().min(5).max(100),
 });
 
-const loginRoute = async (req: NextApiRequest, res: NextApiResponse) => {
+const loginRoute = async (
+  req: NextApiRequest,
+  res: NextApiResponse<ApiResponse<User>>
+) => {
   try {
     const { email, password } = await schema.validateAsync(req.body);
     const userData = await findUser(email);
@@ -35,7 +42,7 @@ const loginRoute = async (req: NextApiRequest, res: NextApiResponse) => {
     // Save sesssion.
     req.session.user = user;
     await req.session.save();
-    res.status(200).json(user);
+    res.status(200).json({ success: true, data: user });
   } catch (error) {
     writeErrorResponse(res, error as Error);
   }
