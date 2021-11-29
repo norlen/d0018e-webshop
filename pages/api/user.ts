@@ -10,9 +10,7 @@ export type User = {
   id: string;
 };
 
-export default withIronSessionApiRoute(userRoute, sessionOptions);
-
-async function userRoute(req: NextApiRequest, res: NextApiResponse<User>) {
+const userRoute = async (req: NextApiRequest, res: NextApiResponse<User>) => {
   if (req.session.user) {
     res.json({
       ...req.session.user,
@@ -29,4 +27,6 @@ async function userRoute(req: NextApiRequest, res: NextApiResponse<User>) {
       id: "",
     });
   }
-}
+};
+
+export default withIronSessionApiRoute(userRoute, sessionOptions);

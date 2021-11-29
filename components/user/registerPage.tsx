@@ -1,14 +1,23 @@
 import { useState } from "react";
-import { useMember, useUser } from "@lib/hooks";
+import { useSignup, useUser } from "@lib/hooks";
+import { User } from "pages/api/user";
+
+type SignupArgs = {
+  email: string;
+  name: string;
+  password: string;
+};
 
 const RegisterPage = () => {
+  // Redirect if already signed in.
   const { mutateUser } = useUser({
     redirectTo: "/",
     redirectIfFound: true,
   });
 
-  const { loading, error, memberData } = useMember();
+  const { loading, error, signup } = useSignup();
 
+  // Form inputs.
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -19,9 +28,9 @@ const RegisterPage = () => {
     e.preventDefault();
     if (!canSubmit) return;
 
-    const result = await memberData(name, email, password);
-    if (result) {
-      mutateUser(result);
+    const user = await signup({ name, email, password });
+    if (user) {
+      mutateUser(user);
     }
   };
 

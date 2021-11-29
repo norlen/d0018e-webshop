@@ -6,12 +6,12 @@ import { useState } from "react";
 
 import { useCart } from "@lib/hooks";
 import { CartItem } from "@lib/db/cart";
-import { useRemoveFromCart, useCreateOrder } from "@lib/hooks";
+import { useRemoveFromCart, useAddOrder } from "@lib/hooks";
 import { useRouter } from "next/router";
 
 const CheckoutPage: NextPage = () => {
   const { cart } = useCart();
-  const { loading, error, createOrder } = useCreateOrder();
+  const { loading, error, addOrder } = useAddOrder();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -19,29 +19,25 @@ const CheckoutPage: NextPage = () => {
   const [city, setCity] = useState("");
   const [postalCode, setPostalCode] = useState("");
   const router = useRouter();
-  const [createOrderError, setError] = useState("");
 
   const subtotal = cart
     .map((i) => i.price * i.quantity)
     .reduce((acc, v) => acc + v, 0);
 
   const onSubmit = async () => {
-    const combinedAddress = [address, postalCode, city].join(", ");
     const cartItems = cart.map((c) => ({ id: c.id, quantity: c.quantity }));
 
-    const res = await createOrder(
+    const res = await addOrder({
       name,
       email,
-      combinedAddress,
+      address,
+      postalCode,
+      city,
       phoneNumber,
       subtotal,
-      cartItems
-    );
-    if (res.message) {
-      setError(res.message);
-    } else {
-      router.push(`/order/${res.orderId}`);
-    }
+      cart: cartItems,
+    });
+    router.push(`/order/${res.orderId}`);
   };
 
   const canPlaceOrder =
@@ -140,11 +136,6 @@ const CheckoutPage: NextPage = () => {
             </div>
           </div>
         </div>
-        {createOrderError && (
-          <div className="bg-red-200 rounded-md text-center py-1 text-sm border-red-500 border">
-            {createOrderError}
-          </div>
-        )}
         {error && (
           <div className="bg-red-200 rounded-md text-center py-1 text-sm border-red-500 border">
             {error}
@@ -189,7 +180,13 @@ type CartItemProps = {
 };
 
 const CartItem = ({ item }: CartItemProps) => {
+  const { mutateCart } = useCart();
   const { loading, error, removeFromCart } = useRemoveFromCart();
+
+  const removeProduct = async (productId: string) => {
+    await removeFromCart({ productId });
+    await mutateCart();
+  };
 
   return (
     <>
@@ -224,7 +221,7 @@ const CartItem = ({ item }: CartItemProps) => {
             className={`font-medium text-green-500 hover:text-green-700 ${
               loading ? "disabled opacity-50 hover:text-green-500" : ""
             }`}
-            onClick={() => removeFromCart(item.id)}
+            onClick={() => removeProduct(item.id)}
           >
             {loading ? "Tar bort..." : "Ta bort"}
           </button>

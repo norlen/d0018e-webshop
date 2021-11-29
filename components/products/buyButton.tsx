@@ -1,14 +1,20 @@
-import { useAddToCart, useUser } from "@lib/hooks";
+import { useAddToCart, useCart, useUser } from "@lib/hooks";
 import Link from "next/link";
 import React from "react";
 
 type Props = {
-  productID: string;
+  productId: string;
 };
 
-const BuyButton = ({ productID }: Props) => {
+const BuyButton = ({ productId }: Props) => {
+  const { mutateCart } = useCart();
   const { loading, error, addToCart } = useAddToCart();
   const { user } = useUser();
+
+  const addProduct = async (quantity: number) => {
+    await addToCart({ productId, quantity });
+    await mutateCart();
+  };
 
   return (
     <>
@@ -17,7 +23,7 @@ const BuyButton = ({ productID }: Props) => {
           className={`py-2 px-4 rounded-md shadow-md bg-green-300 hover:bg-green-500 w-24 h-10 ${
             loading ? "disabled opacity-50" : ""
           }`}
-          onClick={() => addToCart(productID, 1)}
+          onClick={() => addProduct(1)}
         >
           {loading ? (
             <svg
@@ -46,7 +52,7 @@ const BuyButton = ({ productID }: Props) => {
         </button>
       ) : user && user.isAdmin ? (
         <button className="py-2 px-4 rounded-md shadow-md bg-green-300 hover:bg-green-500">
-          <Link href={`/produkt/${productID}`}>
+          <Link href={`/produkt/${productId}`}>
             <a>Edit product</a>
           </Link>
         </button>

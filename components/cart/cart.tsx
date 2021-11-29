@@ -14,7 +14,13 @@ type CartItemProps = {
 };
 
 const CartItem = ({ item, setOpen }: CartItemProps) => {
+  const { mutateCart } = useCart();
   const { loading, error, removeFromCart } = useRemoveFromCart();
+
+  const removeItem = async (productId: string) => {
+    await removeFromCart({ productId });
+    await mutateCart();
+  };
 
   return (
     <>
@@ -49,7 +55,7 @@ const CartItem = ({ item, setOpen }: CartItemProps) => {
             className={`font-medium text-green-500 hover:text-green-700 ${
               loading ? "disabled opacity-50 hover:text-green-500" : ""
             }`}
-            onClick={() => removeFromCart(item.id)}
+            onClick={() => removeItem(item.id)}
           >
             {loading ? "Tar bort..." : "Ta bort"}
           </button>

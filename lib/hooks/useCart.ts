@@ -8,7 +8,7 @@ type CartRequest = {
 
 export const useCart = () => {
   const { data, mutate: mutateCart } = useSWR<CartRequest>(
-    "/api/get_cart",
+    "/api/cart",
     fetcher
   );
 

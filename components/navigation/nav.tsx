@@ -5,7 +5,7 @@ import { useUser } from "@lib/hooks";
 
 import Cart from "@components/cart/cart";
 import { fetcher } from "@lib/util";
-import router, { useRouter } from "next/router";
+import { useRouter } from "next/router";
 
 const navigation = {
   pages: [

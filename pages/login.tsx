@@ -10,14 +10,13 @@ const LoginPage: NextPage = () => {
     redirectTo: "/",
     redirectIfFound: true,
   });
-  const { loading, error, login } = useLogin();
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { loading, error, login } = useLogin();
 
   const onSubmit = async (e: any) => {
     e.preventDefault();
-    const data = await login(email, password);
+    const data = await login({ email, password });
     if (data) {
       mutateUser(data);
     }
