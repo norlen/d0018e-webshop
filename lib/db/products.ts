@@ -12,6 +12,53 @@ export type Product = {
 };
 
 // returns boolean to indicate if an update was made or not.
+export const addProduct = async (
+  name: string,
+  category: string,
+  quantity: string,
+  price: string,
+  description: string,
+  producer: string,
+  image_url: string
+) => {
+  console.log("DB");
+  console.log("name: " + name);
+  console.log("category: " + category);
+  console.log("quantity: " + quantity);
+  console.log("price: " + price);
+  console.log("desc: " + description);
+  console.log("producer: " + producer);
+  console.log("image_url: " + image_url);
+  // get category ID
+  const sqlC = `SELECT c.id FROM Category AS c WHERE c.name=$1`;
+  // get producer ID
+  const sqlP = `SELECT p.id FROM Producer AS p WHERE p.name=$1`;
+  const sql = `
+  INSERT INTO Products (name, category_id, quantity, price, description, producer_id, image_url) 
+VALUES ($1, $2, $3, $4, $5, $6, $7)
+RETURNING id;
+  `;
+  let successfullAdd: boolean = false;
+  const result = await run(async (client) => {
+    const catId = await client.query(sqlC, [category]);
+    const proId = await client.query(sqlP, [producer]);
+    const result = await client.query(sql, [
+      name,
+      "1",
+      quantity,
+      price,
+      description,
+      "1",
+      image_url,
+    ]);
+    if (result.rows[0]) {
+      successfullAdd = true;
+    }
+  });
+  return successfullAdd;
+};
+
+// returns boolean to indicate if an update was made or not.
 export const updateProduct = async (
   id: string,
   name: string,

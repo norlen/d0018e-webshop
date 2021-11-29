@@ -24,6 +24,12 @@ const navigation = {
       name: "Kött",
       href: "/kategori/kött/",
     },
+
+    /*     {
+      id: "addproduct",
+      name: "Lägg till produkt",
+      href: "/produkt/läggtillprodukt",
+    }, */
     // {
     //   id: "producers",
     //   name: "Producenter",
@@ -96,7 +102,20 @@ const Navigation = () => {
 
             {/* Show cart if customer account*/}
             {user && user.isAdmin ? (
-              <></>
+              <div className="ml-auto flex items-center gap-4">
+                <span className="h-6 w-px bg-gray-200" aria-hidden="true" />
+                <Link href="#">
+                  <a
+                    className="text-sm font-medium text-gray-700 hover:text-green-500"
+                    onClick={async (e) => {
+                      e.preventDefault();
+                      router.push("/produkt/laggtillprodukt");
+                    }}
+                  >
+                    Lägg Till Produkter
+                  </a>
+                </Link>
+              </div>
             ) : (
               <>
                 <span className="h-6 w-px bg-gray-200" aria-hidden="true" />
