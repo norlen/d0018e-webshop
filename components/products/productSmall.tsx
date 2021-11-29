@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import BuyButton from "./buyButton";
+import { useUser } from "@lib/hooks";
 
 const cutoff = (s: string, maxlen: number): string => {
   if (s.length > maxlen) {
@@ -23,12 +24,12 @@ type Props = {
 };
 
 const ProductSmall = ({ product }: Props) => {
-  // TODO: Global flash for errors.
+  const { user } = useUser();
 
   return (
     <div className="flex gap-4 flex-col max-w-sm bg-white rounded-lg shadow-md">
       <Link href={`/produkt/${product.id}`}>
-        <a className="h-96 w-96 relative rounded-t-lg overflow-hidden">
+        <a className="block h-96 w-96 relative rounded-t-lg overflow-hidden">
           <Image
             src={product.image_url}
             layout="fill"
@@ -49,7 +50,7 @@ const ProductSmall = ({ product }: Props) => {
         </Link>
         <div className="flex gap-6">
           <p className="font-medium pt-1">{product.price} kr/kg</p>
-          <BuyButton productID={product.id} />
+          <BuyButton productId={product.id} user={user} />
         </div>
       </div>
     </div>

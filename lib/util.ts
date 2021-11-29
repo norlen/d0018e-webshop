@@ -7,14 +7,15 @@ export const status = ["Hanterar", "Packar", "På väg", "Levererad"];
 export const getOrderStatusInt = (str: string) => {
   switch (str) {
     case "Hanterar":
-      return "0";
+      return 0;
     case "Packar":
-      return "1";
+      return 1;
     case "På väg":
-      return "2";
+      return 2;
     case "Levererad":
-      return "3";
+      return 3;
   }
+  return -1;
 };
 
 export const getOrderStatusName = (status: number) => {

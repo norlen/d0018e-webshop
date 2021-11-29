@@ -10,23 +10,27 @@ export type User = {
   id: string;
 };
 
-export default withIronSessionApiRoute(userRoute, sessionOptions);
+const emptyUser = {
+  isLoggedIn: false,
+  isAdmin: false,
+  email: "",
+  name: "",
+  id: "",
+};
 
-async function userRoute(req: NextApiRequest, res: NextApiResponse<User>) {
+const userRoute = async (req: NextApiRequest, res: NextApiResponse<User>) => {
   if (req.session.user) {
-    res.json({
+    const user = {
       ...req.session.user,
       isLoggedIn: true,
       isAdmin: req.session.user.isAdmin,
       name: req.session.user.name,
-    });
+    };
+
+    res.status(200).json(user);
   } else {
-    res.json({
-      isLoggedIn: false,
-      isAdmin: false,
-      email: "",
-      name: "",
-      id: "",
-    });
+    res.status(200).json(emptyUser);
   }
-}
+};
+
+export default withIronSessionApiRoute(userRoute, sessionOptions);

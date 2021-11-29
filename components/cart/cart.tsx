@@ -1,67 +1,15 @@
-import Image from "next/image";
 import Link from "next/link";
-import { ShoppingBagIcon } from "@heroicons/react/outline";
 import { Fragment, useState } from "react";
+import { ShoppingBagIcon } from "@heroicons/react/outline";
 import { Dialog, Transition } from "@headlessui/react";
 import { XIcon } from "@heroicons/react/outline";
+import { useCart } from "@lib/hooks";
 
-import { useCart, useRemoveFromCart } from "@lib/hooks";
-import { CartItem } from "@lib/db";
-
-type CartItemProps = {
-  item: CartItem;
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-};
-
-const CartItem = ({ item, setOpen }: CartItemProps) => {
-  const { loading, error, removeFromCart } = useRemoveFromCart();
-
-  return (
-    <>
-      <div className="flex-shrink-0 w-24 h-24 border border-gray-200 rounded-md overflow-hidden">
-        <Image
-          width={96}
-          height={96}
-          src={item.image_url}
-          alt={item.name}
-          className="w-full h-full object-center object-cover"
-        />
-      </div>
-
-      <div className="ml-4 flex-1 flex flex-col">
-        <div>
-          <div className="flex justify-between text-base font-medium text-gray-900">
-            <h3>
-              <Link href={`/produkt/${item.id}`}>
-                <a onClick={() => setOpen(false)}>{item.name}</a>
-              </Link>
-            </h3>
-            <p className="">{item.price} kr/kg</p>
-          </div>
-          <p className="text-gray-500">Antal {item.quantity}</p>
-          <p className="text-gray-500">
-            Totalt {item.quantity * item.price} kr
-          </p>
-        </div>
-        <div className="flex-1 flex items-end justify-between text-sm">
-          <button
-            type="button"
-            className={`font-medium text-green-500 hover:text-green-700 ${
-              loading ? "disabled opacity-50 hover:text-green-500" : ""
-            }`}
-            onClick={() => removeFromCart(item.id)}
-          >
-            {loading ? "Tar bort..." : "Ta bort"}
-          </button>
-        </div>
-      </div>
-    </>
-  );
-};
+import CartItem from "./cartItem";
 
 const Cart = () => {
   const [open, setOpen] = useState(false);
-  const { cart: cartItems } = useCart();
+  const { cart, mutateCart } = useCart();
 
   return (
     <div className="">
@@ -71,7 +19,7 @@ const Cart = () => {
           aria-hidden="true"
         />
         <span className="ml-2 text-sm font-medium text-gray-700 group-hover:text-green-500">
-          {cartItems.length}
+          {cart.length}
         </span>
       </button>
 
@@ -128,9 +76,13 @@ const Cart = () => {
                             role="list"
                             className="-my-6 divide-y divide-gray-200"
                           >
-                            {cartItems.map((product) => (
+                            {cart.map((product) => (
                               <li key={product.name} className="py-6 flex">
-                                <CartItem item={product} setOpen={setOpen} />
+                                <CartItem
+                                  item={product}
+                                  setOpen={setOpen}
+                                  mutateCart={mutateCart}
+                                />
                               </li>
                             ))}
                           </ul>
@@ -142,7 +94,7 @@ const Cart = () => {
                       <div className="flex justify-between text-base font-medium text-gray-900">
                         <p>Totalt</p>
                         <p>
-                          {cartItems
+                          {cart
                             .map((i) => i.price * i.quantity)
                             .reduce((acc, v) => acc + v, 0)}{" "}
                           kr

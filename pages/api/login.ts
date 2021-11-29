@@ -2,55 +2,50 @@ import { withIronSessionApiRoute } from "iron-session/next";
 import { sessionOptions } from "lib/session";
 import { NextApiRequest, NextApiResponse } from "next";
 import { findUser } from "@lib/db/users";
+import {
+  ApiResponse,
+  UserDoesNotExistError,
+  writeErrorResponse,
+} from "@lib/api";
 import bcrypt from "bcrypt";
-
+import Joi from "joi";
 import type { User } from "./user";
 
-const loginRoute = async (req: NextApiRequest, res: NextApiResponse) => {
-  const { email, password } = await req.body;
-  try {
-    if (!validate(email, password)) {
-      throw Error("Invalid username or password");
-    }
+const schema = Joi.object({
+  email: Joi.string().email().required(),
+  password: Joi.string().normalize().min(5).max(100),
+});
 
+const loginRoute = async (
+  req: NextApiRequest,
+  res: NextApiResponse<ApiResponse<User>>
+) => {
+  try {
+    const { email, password } = await schema.validateAsync(req.body);
     const userData = await findUser(email);
+
+    // Check that the user exists and that the passwords match.
     if (
       userData === undefined ||
-      userData.email === undefined ||
-      userData.password === undefined
+      !bcrypt.compareSync(password, userData.password)
     ) {
-      throw Error("internal error");
+      throw UserDoesNotExistError();
     }
 
-    // Check if passwords match.
-    if (!bcrypt.compareSync(password, userData.password)) {
-      throw Error(
-        "User with that combination of email and password does not exists!"
-      );
-    }
-    const adminFlag = userData.role === "administrator" ? true : false;
-
+    const isAdmin = userData.role === "administrator" ? true : false;
     const user = {
+      ...userData,
       isLoggedIn: true,
-      isAdmin: adminFlag,
-      email: userData.email,
-      name: userData.name,
-      id: userData.id,
-      role: userData.role,
+      isAdmin,
     } as User;
 
     // Save sesssion.
     req.session.user = user;
     await req.session.save();
-    res.json(user);
+    res.status(200).json({ success: true, data: user });
   } catch (error) {
-    res.status(500).json({ message: (error as Error).message });
+    writeErrorResponse(res, error as Error);
   }
-};
-
-const validate = (email: string, password: string): boolean => {
-  const check = (f: string) => !!f && typeof f === "string" && f.length > 5;
-  return check(email) && check(password);
 };
 
 export default withIronSessionApiRoute(loginRoute, sessionOptions);

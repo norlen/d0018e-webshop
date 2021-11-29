@@ -1,38 +1,43 @@
 import { useState } from "react";
+import { mapError } from "@lib/errorCodes";
 
-export const useMember = () => {
+type UseCallAPIResp<T, U> = {
+  loading: boolean;
+  error?: string;
+  call: (data: T) => Promise<U>;
+};
+
+export const useCallAPI = <T, U>(url: string): UseCallAPIResp<T, U> => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | undefined>(undefined);
 
-  const memberData = async (name: string, email: string, password: string) => {
-    setError(undefined);
-
-    const url = "/api/create_member";
+  const call = async (data: any) => {
     const options = {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ name, email, password }),
+      body: JSON.stringify(data),
     };
 
     try {
       setLoading(true);
       const response = await fetch(url, options);
-      const data = await response.json();
+      const json = await response.json();
       setLoading(false);
 
       if (!response.ok) {
-        setError(data.message);
+        console.log("Got error from API", json);
+        setError(mapError(json.code, json.message));
       }
-      return data;
+
+      return json.data;
     } catch (err) {
+      setLoading(false);
       console.error("fetch error", err);
       setError((err as Error).message);
     }
   };
 
-  return { loading, error, memberData };
+  return { loading, error, call };
 };
-
-export default useMember;

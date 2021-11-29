@@ -1,23 +1,22 @@
 import { Listbox } from "@headlessui/react";
 import { CheckIcon, SelectorIcon } from "@heroicons/react/outline";
-import { useChangeOrder } from "@lib/hooks/useChangeOrder";
+import { useUpdateOrder } from "@lib/hooks";
 import React, { useState } from "react";
 import { getOrderStatusInt } from "@lib/util";
 import { status } from "@lib/util";
 import { classNames } from "@lib/util";
 
 const Select = ({ currentStatus, orderId }: any) => {
+  const { loading, error, updateOrder } = useUpdateOrder();
+  const [selected, setSelected] = useState(status[currentStatus]);
+
   const onChange = async (selected: string) => {
     // get the integer that represents the correct status in db.
-    const orderStatus = getOrderStatusInt(selected);
-    if (typeof orderStatus === "string") {
-      await changeOrder(orderId, orderStatus);
-    }
+    const newOrderStatus = getOrderStatusInt(selected);
+    await updateOrder({ orderId, newOrderStatus });
     setSelected(selected);
   };
 
-  const { loading, error, changeOrder } = useChangeOrder();
-  const [selected, setSelected] = useState(status[currentStatus]);
   return (
     <Listbox
       value={selected}

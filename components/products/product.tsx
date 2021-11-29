@@ -1,8 +1,8 @@
 import { useUser } from "@lib/hooks";
-import useChangeProduct from "@lib/hooks/useChangeProduct";
 import Image from "next/image";
 import { useState } from "react";
 import BuyButton from "./buyButton";
+import { useUpdateProduct } from "@lib/hooks";
 
 type Props = {
   product: {
@@ -20,9 +20,8 @@ type Props = {
 const ProductC = ({ product }: Props) => {
   // TODO: Global flash for errors.
   const { user } = useUser();
-  const { loading, error, changeProduct } = useChangeProduct();
+  const { loading, error, updateProduct } = useUpdateProduct();
 
-  const [updateError, setUpdateError] = useState("");
   const [name, setName] = useState(product.name);
   const [quantity, setQuantity] = useState(product.quantity.toString());
   const [description, setDescription] = useState(product.description);
@@ -33,17 +32,14 @@ const ProductC = ({ product }: Props) => {
   const onSubmit = async (e: any) => {
     e.preventDefault();
     if (!canSubmit) return;
-    const res = await changeProduct(
-      product.id,
+
+    await updateProduct({
+      id: product.id,
       name,
       quantity,
       description,
-      price
-    );
-    setUpdateError("Kunde inte updatera produkten, försök igen.");
-    if (res) {
-      setUpdateError("");
-    }
+      price,
+    });
   };
 
   return user && user?.isAdmin ? (
@@ -116,9 +112,9 @@ const ProductC = ({ product }: Props) => {
             >
               {loading ? "Updaterar produkt..." : "Spara produkt"}
             </button>
-            {updateError && (
+            {error && (
               <span className="bg-red-200 rounded-md text-center py-1 text-sm border-red-500 border mt-2 w-full">
-                {updateError}
+                {error}
               </span>
             )}
           </form>
@@ -150,7 +146,7 @@ const ProductC = ({ product }: Props) => {
           <p className="">
             Pris: <span className="font-medium">{product.price} kr/kg</span>
           </p>
-          <BuyButton productID={product.id} />
+          <BuyButton productId={product.id} user={user} />
         </div>
       </div>
     </div>
