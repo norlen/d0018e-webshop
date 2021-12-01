@@ -25,7 +25,7 @@ const SelectList = ({ selectedItem, setSelectedItem, list }: any) => {
           </span>
         </Listbox.Button>
         <Listbox.Options className="absolute z-50 mt-1 w-full bg-white shadow-lg max-h-56 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 focus:outline-none">
-          {list.map((item: { id: string; name: string }) => (
+          {list.map((item: { name: string; id: string }) => (
             <Listbox.Option
               key={item.name}
               className={({ active }) =>
