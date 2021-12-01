@@ -4,16 +4,19 @@ import { getProducersAll } from "@lib/db/producer";
 import { getCategoriesAll } from "@lib/db/categories";
 import React, { useState } from "react";
 import { useAddProduct } from "@lib/hooks";
-import { Producer } from "@lib/db/producer";
-import { Category } from "@lib/db/categories";
 import SelectList from "@components/products/selectList";
 
 const defaultImage: string = "/images/default-product.png";
 const defaultDescription: string = "Beskrivning kommer snart...";
 
+type ListItem = {
+  name: string;
+  id: string;
+};
+
 type StaticProps = {
-  categories: Category[];
-  producers: Producer[];
+  categories: ListItem[];
+  producers: ListItem[];
 };
 
 const AddProductPage: NextPage<StaticProps> = ({
@@ -172,7 +175,7 @@ export const getStaticProps: GetStaticProps = async () => {
   const producers = await getProducersAll();
   return {
     props: { categories, producers },
-    revalidate: 60,
+    revalidate: 120,
   };
 };
 
