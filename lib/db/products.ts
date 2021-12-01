@@ -15,40 +15,28 @@ export type Product = {
 export const addProduct = async (
   name: string,
   category: string,
-  quantity: string,
-  price: string,
+  quantity: number,
+  price: number,
   description: string,
   producer: string,
   image_url: string
 ) => {
-  console.log("DB");
-  console.log("name: " + name);
-  console.log("category: " + category);
-  console.log("quantity: " + quantity);
-  console.log("price: " + price);
-  console.log("desc: " + description);
-  console.log("producer: " + producer);
-  console.log("image_url: " + image_url);
-  // get category ID
-  const sqlC = `SELECT c.id FROM Category AS c WHERE c.name=$1`;
-  // get producer ID
-  const sqlP = `SELECT p.id FROM Producer AS p WHERE p.name=$1`;
   const sql = `
-  INSERT INTO Products (name, category_id, quantity, price, description, producer_id, image_url) 
-VALUES ($1, $2, $3, $4, $5, $6, $7)
-RETURNING id;
-  `;
+    INSERT INTO Products 
+      (name, category_id, quantity, price, description, producer_id, image_url) 
+    VALUES 
+      ($1, $2, $3, $4, $5, $6, $7)
+    RETURNING id;
+    `;
   let successfullAdd: boolean = false;
-  const result = await run(async (client) => {
-    const catId = await client.query(sqlC, [category]);
-    const proId = await client.query(sqlP, [producer]);
+  await run(async (client) => {
     const result = await client.query(sql, [
       name,
-      "1",
+      category,
       quantity,
       price,
       description,
-      "1",
+      producer,
       image_url,
     ]);
     if (result.rows[0]) {
@@ -56,6 +44,23 @@ RETURNING id;
     }
   });
   return successfullAdd;
+};
+
+// returns boolean to indicate if the delete was made or not.
+export const removeProduct = async (id: string) => {
+  const sql = `
+    DELETE FROM Products
+    WHERE id = $1
+    RETURNING id;
+  `;
+  let successfullDelete: boolean = false;
+  await run(async (client) => {
+    const res = await client.query(sql, [id]);
+    if (res.rows[0] != undefined) {
+      successfullDelete = true;
+    }
+  });
+  return successfullDelete;
 };
 
 // returns boolean to indicate if an update was made or not.

@@ -70,11 +70,36 @@ export type ProductUpdateRequest = {
   quantity: string;
 };
 
+export type ProductDeleteRequest = {
+  id: string;
+};
+
+export const useDeleteProduct = () => {
+  const { loading, error, call } = useCallAPI<ProductDeleteRequest, void>(
+    "/api/product/delete_product"
+  );
+  return { loading, error, deleteProduct: call };
+};
+
 export const useUpdateProduct = () => {
   const { loading, error, call } = useCallAPI<ProductUpdateRequest, void>(
     "/api/product/update"
   );
   return { loading, error, updateProduct: call };
+};
+
+export type ProductAddRequest = {
+  name: string;
+  category: string;
+  quantity: string;
+  price: string;
+  description: string;
+  producer: string;
+  image_url: string;
+};
+
+export type ProductAddResponse = {
+  successfullAdd: boolean;
 };
 
 export type OrderAddRequest = {
@@ -93,6 +118,14 @@ export type OrderAddRequest = {
 
 export type OrderAddResponse = {
   orderId: string;
+};
+
+export const useAddProduct = () => {
+  const { loading, error, call } = useCallAPI<
+    ProductAddRequest,
+    ProductAddResponse
+  >("/api/product/add_product");
+  return { loading, error, addProduct: call };
 };
 
 export const useAddOrder = () => {

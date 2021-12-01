@@ -33,7 +33,7 @@ const CustomerBuyButton = ({ isAdmin, productId }: CustomerButtonProps) => {
     return (
       <button className="py-2 px-4 rounded-md shadow-md bg-green-300 hover:bg-green-500">
         <Link href={`/produkt/${productId}`}>
-          <a>Edit product</a>
+          <a>Ändra produkt</a>
         </Link>
       </button>
     );

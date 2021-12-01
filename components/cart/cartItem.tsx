@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import { useRemoveFromCart, CartRequest } from "@lib/hooks";
+import { CartRequest } from "@lib/hooks/useCart";
+import { useRemoveFromCart } from "@lib/hooks";
 import { CartItem } from "@lib/db";
 import { KeyedMutator } from "swr";
 
