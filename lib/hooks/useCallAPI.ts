@@ -31,7 +31,7 @@ export const useCallAPI = <T, U>(url: string): UseCallAPIResp<T, U> => {
         setError(mapError(json.code, json.message));
       }
 
-      return json.data;
+      return { success: json.success, ...json.data };
     } catch (err) {
       setLoading(false);
       console.error("fetch error", err);

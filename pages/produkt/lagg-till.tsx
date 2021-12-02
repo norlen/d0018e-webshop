@@ -1,10 +1,11 @@
-import { GetStaticProps, NextPage } from "next";
+import { GetStaticProps, GetStaticPaths, NextPage } from "next";
 import Head from "next/head";
 import { getProducersAll } from "@lib/db/producer";
 import { getCategoriesAll } from "@lib/db/categories";
 import React, { useState } from "react";
 import { useAddProduct } from "@lib/hooks";
 import SelectList from "@components/products/selectList";
+import Error from "@components/error/error";
 
 const defaultImage: string = "/images/default-product.png";
 const defaultDescription: string = "Beskrivning kommer snart...";
@@ -47,7 +48,7 @@ const AddProductPage: NextPage<StaticProps> = ({
 
     const category: string = selectedCategory.id;
     const producer: string = selectedProducer.id;
-    await addProduct({
+    const result = await addProduct({
       name,
       category,
       quantity,
@@ -56,14 +57,17 @@ const AddProductPage: NextPage<StaticProps> = ({
       producer,
       image_url,
     });
-    setName("");
-    setQ("");
-    setPrice("");
-    setDesc(["", defaultDescription]);
-    setImageURL(["", defaultImage]);
-    setSelectedCategory(categories[0]);
-    setSelectedProducer(producers[0]);
+    if (result.success) {
+      setName("");
+      setQ("");
+      setPrice("");
+      setDesc(["", defaultDescription]);
+      setImageURL(["", defaultImage]);
+      setSelectedCategory(categories[0]);
+      setSelectedProducer(producers[0]);
+    }
   };
+
   return (
     <>
       <Head>
@@ -156,11 +160,7 @@ const AddProductPage: NextPage<StaticProps> = ({
               >
                 {loading ? "Skapar produkt..." : "Skapa produkt"}
               </button>
-              {error && (
-                <span className="bg-red-200 rounded-md text-center py-1 text-sm border-red-500 border mt-2 w-full">
-                  {error}
-                </span>
-              )}
+              <Error message={error} />
             </form>
           </div>
         </div>
@@ -170,9 +170,14 @@ const AddProductPage: NextPage<StaticProps> = ({
 };
 
 export const getStaticProps: GetStaticProps = async () => {
-  // Fetch data from DB.
   const categories = await getCategoriesAll();
   const producers = await getProducersAll();
+
+  // If we cannot fetch these (i.e. at build time) then skip.
+  if (categories.length === 0 || producers.length === 0) {
+    return { notFound: true };
+  }
+
   return {
     props: { categories, producers },
     revalidate: 120,

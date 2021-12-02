@@ -31,8 +31,8 @@ const Home: NextPage<StaticProps> = ({ products }) => {
 };
 
 export const getStaticProps: GetStaticProps = async () => {
-  // Fetch data from DB.
   const products = await getProductsAll();
+
   return {
     props: { products },
     revalidate: 60,
