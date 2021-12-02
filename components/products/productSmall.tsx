@@ -1,21 +1,16 @@
 import Link from "next/link";
 import Image from "next/image";
 import BuyButton from "./buyButton";
-import { useUser } from "@lib/hooks";
-
-const cutoff = (s: string, maxlen: number): string => {
-  if (s.length > maxlen) {
-    s = s.slice(0, maxlen - 3);
-    s = s.concat("...");
-  }
-  return s;
-};
+import { useUser, useCart } from "@lib/hooks";
+import { cutoff, getStock } from "@lib/util";
+import StockStatus from "./stockStatus";
 
 type Props = {
   product: {
     id: string;
     name: string;
     category: string;
+    quantity: string;
     producer: string;
     description: string;
     price: string;
@@ -25,6 +20,11 @@ type Props = {
 
 const ProductSmall = ({ product }: Props) => {
   const { user } = useUser();
+  const { cartItems } = useCart();
+
+  const diff = cartItems[product.id]?.quantity || 0;
+  const finalQuantity = parseInt(product.quantity) - diff;
+  const [amount, stock] = getStock(finalQuantity);
 
   return (
     <div className="flex gap-4 flex-col max-w-sm bg-white rounded-lg shadow-md">
@@ -39,7 +39,10 @@ const ProductSmall = ({ product }: Props) => {
         </a>
       </Link>
       <div className="flex flex-col px-2">
-        <p className="text-sm text-gray-500">{product.category}</p>
+        <div className="flex justify-between text-sm text-gray-500">
+          <p className="">{product.category}</p>
+          <StockStatus text={stock} amount={amount} className="mt-0.5" />
+        </div>
         <p className="font-medium">{product.name}</p>
         <p className="font-medium">{product.producer}</p>
         <p className="test-gray-800">{cutoff(product.description, 45)}</p>
@@ -50,7 +53,7 @@ const ProductSmall = ({ product }: Props) => {
         </Link>
         <div className="flex gap-6">
           <p className="font-medium pt-1">{product.price} kr/kg</p>
-          <BuyButton productId={product.id} user={user} />
+          <BuyButton productId={product.id} user={user} quantity={amount} />
         </div>
       </div>
     </div>

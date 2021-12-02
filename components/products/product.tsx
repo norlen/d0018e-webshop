@@ -1,7 +1,9 @@
-import { useUser } from "@lib/hooks";
+import { useCart, useUser } from "@lib/hooks";
 import Image from "next/image";
 import BuyButton from "./buyButton";
 import EditPage from "./editProductPage";
+import { getStock } from "@lib/util";
+import StockStatus from "./stockStatus";
 
 type Props = {
   product: {
@@ -17,14 +19,19 @@ type Props = {
 };
 
 const ProductC = ({ product }: Props) => {
-  // TODO: Global flash for errors.
   const { user } = useUser();
+  const { cartItems } = useCart();
 
-  return user && user?.isAdmin ? (
-    // if admin is logged in
-    <EditPage product={product} />
-  ) : (
-    // if customer is logged in
+  const diff = cartItems[product.id]?.quantity || 0;
+  const finalQuantity = parseInt(product.quantity) - diff;
+  const [amount, stock] = getStock(finalQuantity);
+
+  // Special page for admins.
+  if (user && user.isAdmin) {
+    return <EditPage product={product} />;
+  }
+
+  return (
     <div className="flex gap-4 bg-white rounded-lg">
       <div className="w-96 h-96 rounded-l-lg overflow-hidden relative">
         <Image
@@ -48,7 +55,11 @@ const ProductC = ({ product }: Props) => {
           <p className="">
             Pris: <span className="font-medium">{product.price} kr/kg</span>
           </p>
-          <BuyButton productId={product.id} user={user} />
+
+          <div className="flex gap-4">
+            <StockStatus amount={amount} text={stock} className="mt-1" />
+            <BuyButton productId={product.id} user={user} quantity={amount} />
+          </div>
         </div>
       </div>
     </div>

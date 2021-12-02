@@ -5,12 +5,19 @@ import { User } from "pages/api/user";
 
 type Props = {
   productId: string;
+  quantity: number;
   user?: User;
 };
 
-const BuyButton = ({ productId, user }: Props) => {
+const BuyButton = ({ productId, user, quantity }: Props) => {
   if (user && user.isLoggedIn) {
-    return <CustomerBuyButton isAdmin={user.isAdmin} productId={productId} />;
+    return (
+      <CustomerBuyButton
+        isAdmin={user.isAdmin}
+        productId={productId}
+        quantity={quantity}
+      />
+    );
   }
   return <VisitorBuyButton />;
 };
@@ -18,9 +25,14 @@ const BuyButton = ({ productId, user }: Props) => {
 type CustomerButtonProps = {
   isAdmin: boolean;
   productId: string;
+  quantity: number;
 };
 
-const CustomerBuyButton = ({ isAdmin, productId }: CustomerButtonProps) => {
+const CustomerBuyButton = ({
+  isAdmin,
+  productId,
+  quantity,
+}: CustomerButtonProps) => {
   const { mutateCart } = useCart();
   const { loading, error, addToCart } = useAddToCart();
 
@@ -28,6 +40,7 @@ const CustomerBuyButton = ({ isAdmin, productId }: CustomerButtonProps) => {
     await addToCart({ productId, quantity });
     await mutateCart();
   };
+  const canBuy = quantity > 0 && !loading;
 
   if (isAdmin) {
     return (
@@ -42,8 +55,9 @@ const CustomerBuyButton = ({ isAdmin, productId }: CustomerButtonProps) => {
   return (
     <button
       className={`py-2 px-4 rounded-md shadow-md bg-green-300 hover:bg-green-500 w-24 h-10 ${
-        loading ? "disabled opacity-50" : ""
+        !canBuy ? "disabled opacity-50 hover:bg-green-300" : ""
       }`}
+      disabled={!canBuy}
       onClick={() => addProduct(1)}
     >
       {loading ? (

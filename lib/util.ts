@@ -31,5 +31,25 @@ export const getOrderStatusName = (status: number) => {
   }
 };
 
+export const cutoff = (s: string, maxlen: number): string => {
+  if (s.length > maxlen) {
+    s = s.slice(0, maxlen - 3);
+    s = s.concat("...");
+  }
+  return s;
+};
+
+export const getStock = (amount: number): [number, string] => {
+  let text = "";
+  if (amount == 0) {
+    text = "ej i lager";
+  } else if (amount >= 100) {
+    text = "100+";
+  } else {
+    text = amount.toString();
+  }
+  return [amount, text];
+};
+
 // @ts-ignore
 export const fetcher = (...args) => fetch(...args).then((res) => res.json());
