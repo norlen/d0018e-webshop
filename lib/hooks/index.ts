@@ -4,13 +4,19 @@ import { useCallAPI } from "./useCallAPI";
 export * from "./useUser";
 export * from "./useCart";
 
+export type ApiResponse = {
+  success: boolean;
+};
+
 export type LoginRequest = {
   email: string;
   password: string;
 };
 
 export const useLogin = () => {
-  const { loading, error, call } = useCallAPI<LoginRequest, User>("/api/login");
+  const { loading, error, call } = useCallAPI<LoginRequest, User & ApiResponse>(
+    "/api/login"
+  );
   return { loading, error, login: call };
 };
 
@@ -21,9 +27,10 @@ export type SignupRequest = {
 };
 
 export const useSignup = () => {
-  const { loading, error, call } = useCallAPI<SignupRequest, User>(
-    "/api/signup"
-  );
+  const { loading, error, call } = useCallAPI<
+    SignupRequest,
+    User & ApiResponse
+  >("/api/signup");
   return { loading, error, signup: call };
 };
 
@@ -33,7 +40,7 @@ export type CartAddRequest = {
 };
 
 export const useAddToCart = () => {
-  const { loading, error, call } = useCallAPI<CartAddRequest, void>(
+  const { loading, error, call } = useCallAPI<CartAddRequest, ApiResponse>(
     "/api/cart/add"
   );
   return { loading, error, addToCart: call };
@@ -44,7 +51,7 @@ export type CartRemoveRequest = {
 };
 
 export const useRemoveFromCart = () => {
-  const { loading, error, call } = useCallAPI<CartRemoveRequest, void>(
+  const { loading, error, call } = useCallAPI<CartRemoveRequest, ApiResponse>(
     "/api/cart/remove"
   );
   return { loading, error, removeFromCart: call };
@@ -56,7 +63,7 @@ export type OrderUpdateRequest = {
 };
 
 export const useUpdateOrder = () => {
-  const { loading, error, call } = useCallAPI<OrderUpdateRequest, void>(
+  const { loading, error, call } = useCallAPI<OrderUpdateRequest, ApiResponse>(
     "/api/order/update"
   );
   return { loading, error, updateOrder: call };
@@ -75,16 +82,18 @@ export type ProductDeleteRequest = {
 };
 
 export const useDeleteProduct = () => {
-  const { loading, error, call } = useCallAPI<ProductDeleteRequest, void>(
-    "/api/product/delete_product"
-  );
+  const { loading, error, call } = useCallAPI<
+    ProductDeleteRequest,
+    ApiResponse
+  >("/api/product/delete_product");
   return { loading, error, deleteProduct: call };
 };
 
 export const useUpdateProduct = () => {
-  const { loading, error, call } = useCallAPI<ProductUpdateRequest, void>(
-    "/api/product/update"
-  );
+  const { loading, error, call } = useCallAPI<
+    ProductUpdateRequest,
+    ApiResponse
+  >("/api/product/update");
   return { loading, error, updateProduct: call };
 };
 
@@ -123,7 +132,7 @@ export type OrderAddResponse = {
 export const useAddProduct = () => {
   const { loading, error, call } = useCallAPI<
     ProductAddRequest,
-    ProductAddResponse
+    ProductAddResponse & ApiResponse
   >("/api/product/add_product");
   return { loading, error, addProduct: call };
 };
@@ -131,7 +140,7 @@ export const useAddProduct = () => {
 export const useAddOrder = () => {
   const { loading, error, call } = useCallAPI<
     OrderAddRequest,
-    OrderAddResponse
+    OrderAddResponse & ApiResponse
   >("/api/order/add");
   return { loading, error, addOrder: call };
 };

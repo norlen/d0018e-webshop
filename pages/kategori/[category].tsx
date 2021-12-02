@@ -1,9 +1,8 @@
-import { GetStaticProps, GetStaticPaths } from "next";
+import { GetStaticProps, GetStaticPaths, NextPage } from "next";
 import Head from "next/head";
 
 import ProductSmall from "@components/products/productSmall";
 
-import type { NextPage } from "next";
 import { getProductsByCategory, Product } from "@lib/db";
 
 type StaticProps = {

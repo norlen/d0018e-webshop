@@ -109,7 +109,7 @@ const Navigation = () => {
                     className="text-sm font-medium text-gray-700 hover:text-green-500"
                     onClick={async (e) => {
                       e.preventDefault();
-                      router.push("/produkt/laggtillprodukt");
+                      router.push("/produkt/lagg-till");
                     }}
                   >
                     Lägg Till Produkter
