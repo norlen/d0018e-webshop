@@ -52,7 +52,7 @@ const AboutPage: NextPage = () => {
           <p>
             Vi är tre individer som är väldigt eko-vänliga och älskar naturen
             och fred. På fritiden gillar att vi att laga mat utomhus i skogen,
-            meditera samt demonstrera mot multinationella företag som förstår
+            meditera samt demonstrera mot multinationella företag som förstör
             vår vackra natur.
           </p>
         </div>
