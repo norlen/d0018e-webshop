@@ -24,22 +24,16 @@ const navigation = {
       name: "Kött",
       href: "/kategori/kött/",
     },
-
-    /*     {
-      id: "addproduct",
-      name: "Lägg till produkt",
-      href: "/produkt/läggtillprodukt",
-    }, */
     // {
     //   id: "producers",
     //   name: "Producenter",
     //   href: "/producenter/",
     // },
-    // {
-    //   id: "about",
-    //   name: "Om oss",
-    //   href: "/om-oss",
-    // },
+    {
+      id: "about",
+      name: "Om oss",
+      href: "/om",
+    },
   ],
 };
 
