@@ -126,7 +126,8 @@ export const getProductsAll = async (): Promise<Product[]> => {
          pr.name as producer
   FROM products as p
     JOIN category AS c on c.id = p.category_id
-    JOIN producer AS pr on pr.id = p.producer_id;`;
+    JOIN producer AS pr on pr.id = p.producer_id
+  ORDER BY id DESC;`;
 
   return await getMultipleRows(sql);
 };
@@ -147,7 +148,8 @@ export const getProductsByCategory = async (
     JOIN products AS p on p.category_id = c.id
     JOIN producer AS pr on pr.id = p.producer_id
   WHERE
-    c.name = $1;`;
+    c.name = $1
+  ORDER BY id DESC;`;
 
   return await getMultipleRows(sql, [category.toLowerCase()]);
 };
