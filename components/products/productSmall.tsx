@@ -53,7 +53,13 @@ const ProductSmall = ({ product }: Props) => {
         </Link>
         <div className="flex gap-6">
           <p className="font-medium pt-1">{product.price} kr/kg</p>
-          <BuyButton productId={product.id} user={user} quantity={amount} />
+          <BuyButton
+            productId={product.id}
+            user={user}
+            quantity={amount}
+            name={product.name}
+            imagesrc={product.image_url}
+          />
         </div>
       </div>
     </div>

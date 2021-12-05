@@ -2,20 +2,26 @@ import Link from "next/link";
 import React from "react";
 import { useAddToCart, useCart } from "@lib/hooks";
 import { User } from "pages/api/user";
+import toast from "react-hot-toast";
+import CartToast from "@components/cart/cartToast";
 
 type Props = {
   productId: string;
   quantity: number;
+  name: string;
+  imagesrc: string;
   user?: User;
 };
 
-const BuyButton = ({ productId, user, quantity }: Props) => {
+const BuyButton = ({ productId, user, quantity, name, imagesrc }: Props) => {
   if (user && user.isLoggedIn) {
     return (
       <CustomerBuyButton
         isAdmin={user.isAdmin}
         productId={productId}
         quantity={quantity}
+        name={name}
+        imagesrc={imagesrc}
       />
     );
   }
@@ -26,10 +32,14 @@ type CustomerButtonProps = {
   isAdmin: boolean;
   productId: string;
   quantity: number;
+  name: string;
+  imagesrc: string;
 };
 
 const CustomerBuyButton = ({
   isAdmin,
+  name,
+  imagesrc,
   productId,
   quantity,
 }: CustomerButtonProps) => {
@@ -37,6 +47,14 @@ const CustomerBuyButton = ({
   const { loading, error, addToCart } = useAddToCart();
 
   const addProduct = async (quantity: number) => {
+    toast.custom((t) => (
+      <CartToast
+        id={t.id}
+        visible={t.visible}
+        name={name}
+        imagesrc={imagesrc}
+      />
+    ));
     await addToCart({ productId, quantity });
     await mutateCart();
   };

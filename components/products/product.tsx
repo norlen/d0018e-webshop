@@ -58,7 +58,13 @@ const ProductC = ({ product }: Props) => {
 
           <div className="flex gap-4">
             <StockStatus amount={amount} text={stock} className="mt-1" />
-            <BuyButton productId={product.id} user={user} quantity={amount} />
+            <BuyButton
+              productId={product.id}
+              user={user}
+              quantity={amount}
+              name={product.name}
+              imagesrc={product.image_url}
+            />
           </div>
         </div>
       </div>
