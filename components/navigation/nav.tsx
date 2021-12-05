@@ -90,38 +90,6 @@ const Navigation = () => {
           type="submit"
         />
       </form>
-      {/* 
-      <div className="rounded-md h-8">
-        <button className="absolute left-0 top-0 mt-5 mr-4 inline-flex items-center px-3 text-gray-500 text-sm">
-          <SearchIcon className="w-4 h-4" />
-        </button>
-        <input
-          type="text"
-          name="search"
-          id="search"
-          className="block w-full sm:text-sm h-8 text-gray-500 focus:ring-indigo-500 focus:border-indigo-500"
-          placeholder="Sök"
-        />
-        <input
-          type="text"
-          name="first-name"
-          id="first-name"
-          autoComplete="given-name"
-          className="focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md h-full"
-        />
-      </div>
-
-      <div className="pt-2 relative mx-auto text-gray-600">
-        <input
-          className="border-2 border-gray-300 bg-white h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none"
-          type="search"
-          name="search"
-          placeholder="Search"
-        />
-        <button type="submit" className="absolute right-0 top-0 mt-5 mr-4">
-          <SearchIcon className="w-4 h-4" />
-        </button>
-      </div> */}
 
       <div className="flex items-center gap-4">
         {/* Show login and register button if user is not logged in, otherwise logout button. */}
