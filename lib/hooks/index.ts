@@ -3,6 +3,7 @@ import { useCallAPI } from "./useCallAPI";
 
 export * from "./useUser";
 export * from "./useCart";
+export * from "./useAddThenFetchReview";
 
 export type ApiResponse = {
   success: boolean;
