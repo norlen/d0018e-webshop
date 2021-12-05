@@ -153,3 +153,23 @@ export const getProductsByCategory = async (
 
   return await getMultipleRows(sql, [category.toLowerCase()]);
 };
+
+export const searchProducts = async (query: string) => {
+  const sql = `
+  SELECT p.id,
+         p.name,
+         p.description,
+         p.quantity,
+         p.price,
+         p.image_url,
+         'test' as category,
+         'test' as producer,
+         ts_rank_cd(p.document_tokens, query) AS rank
+  FROM products AS p, to_tsquery($1) query
+  WHERE
+    p.document_tokens @@ query
+  ORDER BY rank DESC
+  ;`;
+
+  return await getMultipleRows(sql, [query.toLowerCase()]);
+};
