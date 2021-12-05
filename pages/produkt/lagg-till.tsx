@@ -5,7 +5,7 @@ import { getCategoriesAll } from "@lib/db/categories";
 import React, { useState } from "react";
 import { useAddProduct } from "@lib/hooks";
 import SelectList from "@components/products/selectList";
-import Error from "@components/error/error";
+import Error from "@components/common/error";
 
 const defaultImage: string = "/images/default-product.png";
 const defaultDescription: string = "Beskrivning kommer snart...";

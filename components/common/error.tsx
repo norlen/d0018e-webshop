@@ -2,7 +2,7 @@ type Props = {
   message?: string;
 };
 
-const Error = ({ message }: Props) => {
+export const Error = ({ message }: Props) => {
   if (!message) return null;
 
   return (
@@ -11,5 +11,11 @@ const Error = ({ message }: Props) => {
     </span>
   );
 };
+
+export const InputError = ({ children }: any) => (
+  <span role="alert" className="text-sm text-red-500">
+    {children}
+  </span>
+);
 
 export default Error;

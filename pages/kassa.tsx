@@ -1,54 +1,48 @@
+import type { NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
-import type { NextPage } from "next";
-import { useState } from "react";
-
-import { useCart } from "@lib/hooks";
-import { CartItem } from "@lib/db/cart";
-import { useRemoveFromCart, useAddOrder } from "@lib/hooks";
 import { useRouter } from "next/router";
-import Error from "@components/error/error";
+import { useForm } from "react-hook-form";
+
+import { useCart, useRemoveFromCart, useAddOrder } from "@lib/hooks";
+import { CartItem } from "@lib/db";
+import { classNames } from "@lib/util";
+
+import { Button, Error, InputError } from "@components/common";
+
+type FormData = {
+  name: string;
+  email: string;
+  phoneNumber: string;
+  address: string;
+  city: string;
+  postalCode: string;
+};
 
 const CheckoutPage: NextPage = () => {
   const { cart } = useCart();
   const { loading, error, addOrder } = useAddOrder();
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [address, setAddress] = useState("");
-  const [city, setCity] = useState("");
-  const [postalCode, setPostalCode] = useState("");
   const router = useRouter();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid },
+  } = useForm<FormData>({ mode: "onTouched" });
 
   const subtotal = cart
     .map((i) => i.price * i.quantity)
     .reduce((acc, v) => acc + v, 0);
 
-  const onSubmit = async () => {
+  const onSubmit = handleSubmit(async (data) => {
     const cartItems = cart.map((c) => ({ id: c.id, quantity: c.quantity }));
 
-    const res = await addOrder({
-      name,
-      email,
-      address,
-      postalCode,
-      city,
-      phoneNumber,
-      subtotal,
-      cart: cartItems,
-    });
-    router.push(`/order/${res.orderId}`);
-  };
-
-  const canPlaceOrder =
-    cart.length > 0 &&
-    name.length > 5 &&
-    email.length > 5 &&
-    address.length > 5 &&
-    postalCode.length >= 5 &&
-    city.length > 0 &&
-    phoneNumber.length > 5;
+    const result = await addOrder({ ...data, subtotal, cart: cartItems });
+    if (result.success) {
+      router.push(`/order/${result.orderId}`);
+    }
+  });
 
   return (
     <>
@@ -63,50 +57,190 @@ const CheckoutPage: NextPage = () => {
           <div className="flex flex-col gap-4 max-w-md mx-auto lg:m-0 px-2">
             <h1 className="text-2xl">Leveransinformation</h1>
             <form className="flex flex-col gap-4">
-              <Input
-                name="name"
-                readableName="Namn"
-                type="text"
-                value={name}
-                setValue={setName}
-              />
-              <Input
-                name="email"
-                readableName="Epost"
-                type="email"
-                value={email}
-                setValue={setEmail}
-              />
-              <Input
-                name="address"
-                readableName="Adress"
-                type="text"
-                value={address}
-                setValue={setAddress}
-              />
-              <div className="flex gap-2">
-                <Input
-                  name="city"
-                  readableName="Stad"
+              <div className="flex flex-col gap-1">
+                <label
+                  className="block text-sm font-medium w-full text-gray-700"
+                  htmlFor="name"
+                >
+                  Namn
+                </label>
+                <input
+                  id="name"
                   type="text"
-                  value={city}
-                  setValue={setCity}
+                  className={classNames(
+                    "se-input autofocus",
+                    errors.name ? "border-red-300" : "focus:border-green-500"
+                  )}
+                  {...register("name", {
+                    required: "Namn måste finnas",
+                    minLength: {
+                      value: 5,
+                      message: "Namn måste vara minst 5 tecken",
+                    },
+                    maxLength: {
+                      value: 100,
+                      message: "Namn får högst vara 100 tecken",
+                    },
+                  })}
+                  aria-invalid={errors.name ? "true" : "false"}
                 />
-                <Input
-                  name="postalCode"
-                  readableName="Postnummer"
-                  type="text"
-                  value={postalCode}
-                  setValue={setPostalCode}
-                />
+                {errors.name && <InputError>{errors.name.message}</InputError>}
               </div>
-              <Input
-                name="phoneNumber"
-                readableName="Telefonnummer"
-                type="text"
-                value={phoneNumber}
-                setValue={setPhoneNumber}
-              />
+
+              <div className="flex flex-col gap-1">
+                <label
+                  className="block text-sm font-medium w-full text-gray-700"
+                  htmlFor="email"
+                >
+                  Email
+                </label>
+                <input
+                  id="email"
+                  type="email"
+                  className={classNames(
+                    "se-input",
+                    errors.email ? "border-red-300" : "focus:border-green-500"
+                  )}
+                  {...register("email", {
+                    required: "Epost måste finnas",
+                    pattern: {
+                      value:
+                        /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
+                      message: "Ogiltigt format",
+                    },
+                  })}
+                  aria-invalid={errors.email ? "true" : "false"}
+                />
+                {errors.email && (
+                  <InputError>{errors.email.message}</InputError>
+                )}
+              </div>
+
+              <div className="flex flex-col gap-1">
+                <label
+                  className="block text-sm font-medium w-full text-gray-700"
+                  htmlFor="address"
+                >
+                  Adress
+                </label>
+                <input
+                  id="address"
+                  type="text"
+                  className={classNames(
+                    "se-input",
+                    errors.address ? "border-red-300" : "focus:border-green-500"
+                  )}
+                  {...register("address", {
+                    required: "Adress måste finnas",
+                    minLength: {
+                      value: 5,
+                      message: "Adress måste vara minst 5 tecken",
+                    },
+                    maxLength: {
+                      value: 100,
+                      message: "Adress får högst vara 100 tecken",
+                    },
+                  })}
+                  aria-invalid={errors.address ? "true" : "false"}
+                />
+                {errors.address && (
+                  <InputError>{errors.address.message}</InputError>
+                )}
+              </div>
+
+              <div className="flex gap-2">
+                <div className="flex flex-col gap-1">
+                  <label
+                    className="block text-sm font-medium w-full text-gray-700"
+                    htmlFor="city"
+                  >
+                    Stad
+                  </label>
+                  <input
+                    id="city"
+                    type="text"
+                    className={classNames(
+                      "se-input",
+                      errors.city ? "border-red-300" : "focus:border-green-500"
+                    )}
+                    {...register("city", {
+                      required: "Stad måste finnas",
+                      minLength: {
+                        value: 2,
+                        message: "Stad måste vara minst 2 tecken",
+                      },
+                      maxLength: {
+                        value: 100,
+                        message: "Stad får högst vara 100 tecken",
+                      },
+                    })}
+                    aria-invalid={errors.city ? "true" : "false"}
+                  />
+                  {errors.city && (
+                    <InputError>{errors.city.message}</InputError>
+                  )}
+                </div>
+
+                <div className="flex flex-col gap-1">
+                  <label
+                    className="block text-sm font-medium w-full text-gray-700"
+                    htmlFor="postalCode"
+                  >
+                    Postnummer
+                  </label>
+                  <input
+                    id="postalCode"
+                    type="text"
+                    className={classNames(
+                      "se-input",
+                      errors.postalCode
+                        ? "border-red-300"
+                        : "focus:border-green-500"
+                    )}
+                    {...register("postalCode", {
+                      required: "Postnummber måste finnas",
+                      pattern: {
+                        value: /^[0-9]{5}$/,
+                        message: "Ogiltigt postnummer",
+                      },
+                    })}
+                    aria-invalid={errors.postalCode ? "true" : "false"}
+                  />
+                  {errors.postalCode && (
+                    <InputError>{errors.postalCode.message}</InputError>
+                  )}
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-1">
+                <label
+                  className="block text-sm font-medium w-full text-gray-700"
+                  htmlFor="phoneNumber"
+                >
+                  Telefonnummer
+                </label>
+                <input
+                  id="phoneNumber"
+                  type="text"
+                  className={classNames(
+                    "se-input",
+                    errors.phoneNumber
+                      ? "border-red-300"
+                      : "focus:border-green-500"
+                  )}
+                  {...register("phoneNumber", {
+                    required: "Telefonnummer måste finnas",
+                    pattern: {
+                      value: /^([+]46|0)\d{9}$/,
+                      message: "Ogiltigt telefonnummer",
+                    },
+                  })}
+                  aria-invalid={errors.phoneNumber ? "true" : "false"}
+                />
+                {errors.phoneNumber && (
+                  <InputError>{errors.phoneNumber.message}</InputError>
+                )}
+              </div>
             </form>
           </div>
           <div className="flex flex-col gap-4 max-w-md w-full mx-auto lg:m-0 px-2">
@@ -126,51 +260,19 @@ const CheckoutPage: NextPage = () => {
                 </div>
               </div>
               <div className="border-t border-gray-200 py-4">
-                <button
-                  className={`bg-green-500 py-2 px-4 w-full text-white rounded-md ${
-                    (loading || !canPlaceOrder) && "disabled opacity-50"
-                  } ${!canPlaceOrder && "cursor-not-allowed"} ${
-                    loading && "cursor-wait"
-                  }`}
+                <Button
+                  disabled={!isValid}
+                  text="Skapa order"
+                  loadingText="Skapar order..."
+                  loading={loading}
                   onClick={onSubmit}
-                >
-                  {loading ? "Lägger order..." : "Lägg order"}
-                </button>
+                />
               </div>
             </div>
           </div>
         </div>
       </main>
     </>
-  );
-};
-
-type InputProps = {
-  name: string;
-  readableName: string;
-  type: string;
-  value: string;
-  setValue: any;
-};
-
-const Input = ({ name, readableName, type, value, setValue }: InputProps) => {
-  return (
-    <div className="flex flex-col gap-1">
-      <label
-        className="block text-sm font-medium w-full text-gray-700"
-        htmlFor={name}
-      >
-        {readableName}
-      </label>
-      <input
-        id={name}
-        type={type}
-        required
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
-        className="input w-full rounded-lg px-4 py-2 border border-gray-500 focus:outline-none focus:border-green-500 active:outline-none autofocus"
-      />
-    </div>
   );
 };
 
