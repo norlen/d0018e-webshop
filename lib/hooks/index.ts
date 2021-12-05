@@ -1,9 +1,11 @@
 import { User } from "pages/api/user";
 import { useCallAPI } from "./useCallAPI";
+import { ReviewData } from "@lib/db";
 
 export * from "./useUser";
 export * from "./useCart";
 export * from "./useAddThenFetchReview";
+export * from "./useGetReviews";
 
 export type ApiResponse = {
   success: boolean;
@@ -144,4 +146,18 @@ export const useAddOrder = () => {
     OrderAddResponse & ApiResponse
   >("/api/order/add");
   return { loading, error, addOrder: call };
+};
+
+export type AddReviewRequest = {
+  productId: string;
+  grade: number;
+  comment: string;
+};
+
+export const useAddReview = () => {
+  const { loading, error, call } = useCallAPI<
+    AddReviewRequest,
+    ReviewData & ApiResponse
+  >("/api/create_review");
+  return { loading, error, addReview: call };
 };

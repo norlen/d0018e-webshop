@@ -1,33 +1,52 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { addReview } from "@lib/db/reviews";
+import { addReview, getReviewFromId } from "@lib/db/reviews";
 import { sessionOptions } from "lib/session";
 import { withIronSessionApiRoute } from "iron-session/next";
+import Joi from "joi";
+import { writeErrorResponse, ApiResponse, getAuth } from "@lib/api";
 
-type Data = {
-  message?: string;
+type AddReviewResponse = {
+  id: string;
+  name: string;
+  grade: number;
+  comment: string;
+  created_at: string;
 };
+
+// Valideringsschema, se https://joi.dev/api/?v=17.5.0#string
+const schema = Joi.object({
+  productId: Joi.number().min(0).required(),
+});
 
 const createReview = async (
   req: NextApiRequest,
-  res: NextApiResponse<Data>
+  res: NextApiResponse<ApiResponse<AddReviewResponse>>
 ) => {
   try {
-    if (!(req.session.user && req.session.user.id)) {
-      throw Error("invalid user session");
-    }
-    const userId = req.session.user.id;
+    // Kastar error om användaren inte är inloggad.
+    const userId = getAuth(req).id;
 
-    if (!(req.body.productId && req.body.grade && req.body.comment)) {
-      throw Error("invalid product id, grade or comment");
-    }
-    const { productId, grade, comment } = req.body;
-    // Är lite osäker på om/hur vi kan verifiera att data verkligen satts in databasen och det har gått bra.
-    await addReview(userId, productId, comment, grade);
-    res.status(200).json({});
+    // validera input
+    const { productId, grade, comment } = await schema.validateAsync(req.body);
+
+    // du kan ju returna review id här, så kan du skicka tillbaka det jag antar tillhör en review.
+    // {
+    //    id: ...,
+    //    name: ...,
+    //    productId: ...,
+    //    comment: ...,
+    //    grade: ...
+    // }
+    const id = await addReview(userId, productId, comment, grade);
+    const data = await getReviewFromId(id);
+
+    res.status(200).json({
+      success: true,
+      data,
+    });
   } catch (error) {
-    const message = (error as Error).message;
-    console.error("ERROR createReview:", message);
-    res.status(400).json({ message });
+    // Hjälpfunktion som returnerar ett error i formatet vi vill
+    writeErrorResponse(res, error as Error);
   }
 };
 
