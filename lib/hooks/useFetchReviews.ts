@@ -6,7 +6,7 @@ export const useFetchReviews = () => {
   const getReviewOnlyData = async (productId: string) => {
     const url = "/api/get_reviews";
     const options = {
-      method: "POST",
+      method: "GET",
       headers: {
         "Content-Type": "application/json",
       },
