@@ -2,14 +2,21 @@ import { GetStaticProps, GetStaticPaths } from "next";
 import Head from "next/head";
 
 import type { NextPage } from "next";
-import { getProductById, Product } from "@lib/db";
+import {
+  getAllProductReviews,
+  ReviewData,
+  getProductById,
+  Product,
+} from "@lib/db";
 import ProductComponent from "@components/products/product";
+import ReviewComponent from "@components/reviewcomponents/ReviewComponent";
 
 type StaticProps = {
   product: Product;
+  reviews: ReviewData[];
 };
 
-const ProductPage: NextPage<StaticProps> = ({ product }) => {
+const ProductPage: NextPage<StaticProps> = ({ product, reviews }) => {
   return (
     <>
       <Head>
@@ -20,6 +27,7 @@ const ProductPage: NextPage<StaticProps> = ({ product }) => {
       <main className="flex py-2 lg:py-8 lg:px-12 justify-center">
         <ProductComponent product={product} />
       </main>
+      <ReviewComponent product_id={product.id} reviews={reviews} />
     </>
   );
 };
@@ -41,8 +49,13 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     return { notFound: true };
   }
 
+  let reviews = await getAllProductReviews(params.product);
+  if (reviews === undefined) {
+    return { notFound: true };
+  }
+
   return {
-    props: { product },
+    props: { product, reviews },
     revalidate: 60,
   };
 };
