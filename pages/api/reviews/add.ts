@@ -1,9 +1,14 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { addReview, getReviewFromId } from "@lib/db/reviews";
+import { addReview } from "@lib/db/reviews";
 import { sessionOptions } from "lib/session";
 import { withIronSessionApiRoute } from "iron-session/next";
 import Joi from "joi";
-import { writeErrorResponse, ApiResponse, getAuth } from "@lib/api";
+import {
+  writeErrorResponse,
+  ApiResponse,
+  getAuth,
+  ApiInternalError,
+} from "@lib/api";
 
 type AddReviewResponse = {
   id: string;
@@ -15,6 +20,8 @@ type AddReviewResponse = {
 
 const schema = Joi.object({
   productId: Joi.number().min(0).required(),
+  grade: Joi.number().min(0).max(5).required(),
+  comment: Joi.string().min(5).max(1000).required(),
 });
 
 const createReview = async (
@@ -22,16 +29,19 @@ const createReview = async (
   res: NextApiResponse<ApiResponse<AddReviewResponse>>
 ) => {
   try {
-    const userId = getAuth(req).id;
+    const { id: userId, name } = getAuth(req);
 
     const { productId, grade, comment } = await schema.validateAsync(req.body);
 
-    const id = await addReview(userId, productId, comment, grade);
-    const data = await getReviewFromId(id);
+    // id och created at
+    const data = await addReview(userId, productId, comment, grade);
+    if (data === undefined) {
+      throw ApiInternalError();
+    }
 
     res.status(200).json({
       success: true,
-      data,
+      data: { ...data, name },
     });
   } catch (error) {
     writeErrorResponse(res, error as Error);

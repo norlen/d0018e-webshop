@@ -60,9 +60,10 @@ function ReviewComponent({ productId }: Props) {
 
               <PopUp
                 productId={productId}
-                onAddedReview={(review) =>
-                  mutateReviews([...(reviews || []), review])
-                }
+                onAddedReview={(review) => {
+                  mutateReviews([review, ...(reviews || [])]);
+                  setIsOpen(false);
+                }}
               />
 
               {/* <button onClick={() => setIsOpen(false)}>Deactivate</button>

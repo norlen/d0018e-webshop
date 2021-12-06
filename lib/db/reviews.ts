@@ -8,12 +8,19 @@ export type ReviewData = {
   created_at: string;
 };
 
+export type AddReviewData = {
+  id: string;
+  comment: string;
+  grade: number;
+  created_at: string;
+};
+
 export const addReview = async (
   userId: string,
   productId: string,
   comment: string,
   grade: number
-): Promise<string> => {
+): Promise<AddReviewData | undefined> => {
   const sql = `
     INSERT INTO review (
       user_id,
@@ -23,9 +30,9 @@ export const addReview = async (
     )
     VALUES
       ($1, $2, $3, $4)
-    RETURNING id;
+      RETURNING id, comment, grade, TO_CHAR(created_at, 'YYYY Mon DD HH24:MI') AS created_at;
     `;
-  let data: string = "";
+  let data = undefined;
   await run(async (client) => {
     const res = await client.query(sql, [userId, productId, comment, grade]);
     if (res.rows.length > 0) {
@@ -77,22 +84,4 @@ export const getLatestProductReview = async (
   FETCH FIRST ROW ONLY;`;
 
   return await getSingleRow(sql, [productId]);
-};
-
-export const getReviewFromId = async (
-  Id: string
-): Promise<ReviewData | undefined> => {
-  const sql = `
-  SELECT us.name,
-         re.grade,
-         re.comment,
-         TO_CHAR(re.created_at, 'YYYY Mon DD HH24:MI') created_at
-  FROM review AS re
-    INNER JOIN users AS us ON us.id = re.user_id
-  WHERE re.product_id = $1
-  ORDER BY
-     re.created_at DESC
-  FETCH FIRST ROW ONLY;`;
-
-  return await getSingleRow(sql, [Id]);
 };

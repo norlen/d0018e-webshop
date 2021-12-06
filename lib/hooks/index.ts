@@ -157,6 +157,6 @@ export const useAddReview = () => {
   const { loading, error, call } = useCallAPI<
     AddReviewRequest,
     ReviewData & ApiResponse
-  >("/api/create_review");
+  >("/api/reviews/add");
   return { loading, error, addReview: call };
 };
