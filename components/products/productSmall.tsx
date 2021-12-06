@@ -32,7 +32,10 @@ const ProductSmall = ({ product }: Props) => {
           <StockStatus text={stock} amount={amount} className="mt-0.5" />
         </div>
         <p className="font-medium">{product.name}</p>
-        <p className="font-medium">{product.producer}</p>
+        <Link href={`/producent/${product.producerid}`}>
+          <a className="hover:text-green-500 pt-1">{product.producer}</a>
+        </Link>
+
         <p className="test-gray-800">{cutoff(product.description, 45)}</p>
       </div>
       <div className="flex justify-between align-bottom px-2 pb-2">
