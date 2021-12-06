@@ -1,5 +1,3 @@
-import Button from "@components/reviewcomponents/Button";
-
 type Props = {
   onClick: React.MouseEventHandler<HTMLButtonElement>;
 };
@@ -12,7 +10,12 @@ function AddReview({ onClick }: Props) {
         Om du har använt denna produkt, dela gärna vad du tycker med övriga
         kunder.
       </p>
-      <Button color="green" onClick={onClick} text="Skriv en recension" />
+      <button
+        className={`bg-green-500 w-60 text-center hover:bg-green-700 rounded-lg text-white py-2 px-3 font-medium`}
+        onClick={onClick}
+      >
+        Skriv en recension
+      </button>
     </div>
   );
 }
