@@ -4,6 +4,7 @@ import { CartRequest } from "@lib/hooks/useCart";
 import { useRemoveFromCart } from "@lib/hooks";
 import { CartItem } from "@lib/db";
 import { KeyedMutator } from "swr";
+import toast from "react-hot-toast";
 
 type Props = {
   item: CartItem;
@@ -15,8 +16,14 @@ const CartItem = ({ item, setOpen, mutateCart }: Props) => {
   const { loading, error, removeFromCart } = useRemoveFromCart();
 
   const removeItem = async (productId: string) => {
-    await removeFromCart({ productId });
-    await mutateCart();
+    const result = await removeFromCart({ productId });
+    if (result.success) {
+      await mutateCart();
+    } else {
+      toast.error(error || "Kunde inte ta bort, försök igen", {
+        duration: 1000,
+      });
+    }
   };
 
   return (

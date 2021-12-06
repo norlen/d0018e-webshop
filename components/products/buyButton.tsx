@@ -55,8 +55,14 @@ const CustomerBuyButton = ({
         imagesrc={imagesrc}
       />
     ));
-    await addToCart({ productId, quantity });
-    await mutateCart();
+    const result = await addToCart({ productId, quantity });
+    if (result.success) {
+      await mutateCart();
+    } else {
+      toast.error(error || "Kunde inte lägga till, försök igen", {
+        duration: 1000,
+      });
+    }
   };
   const canBuy = quantity > 0 && !loading;
 
