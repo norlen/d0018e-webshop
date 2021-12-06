@@ -48,12 +48,7 @@ const CustomerBuyButton = ({
 
   const addProduct = async (quantity: number) => {
     toast.custom((t) => (
-      <CartToast
-        id={t.id}
-        visible={t.visible}
-        name={name}
-        imagesrc={imagesrc}
-      />
+      <CartToast visible={t.visible} name={name} imagesrc={imagesrc} />
     ));
     const result = await addToCart({ productId, quantity });
     if (result.success) {
