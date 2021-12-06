@@ -1,13 +1,8 @@
-import { GetStaticProps, GetStaticPaths } from "next";
+import { GetStaticProps, GetStaticPaths, NextPage } from "next";
 import Head from "next/head";
 
-import type { NextPage } from "next";
-import {
-  getAllProductReviews,
-  ReviewData,
-  getProductById,
-  Product,
-} from "@lib/db";
+import { getProductById, Product } from "@lib/db";
+
 import ProductComponent from "@components/products/product";
 import ReviewComponent from "@components/reviewcomponents/ReviewComponent";
 
