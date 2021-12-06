@@ -6,13 +6,13 @@ export type ReviewRequest = {
   data: ReviewData[];
 };
 
-export const useGetReviews = (productId: string) => {
-  const { data: reviews, mutate: mutateReviews } = useSWR(
-    `/api/get_reviews/${productId}`,
+export const useReviews = (productId: string) => {
+  const { data: reviews, mutate: mutateReviews } = useSWR<ReviewData[]>(
+    `/api/reviews/${productId}`,
     fetcher
   );
 
   return { reviews, mutateReviews };
 };
 
-export default useGetReviews;
+export default useReviews;

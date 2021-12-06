@@ -4,8 +4,7 @@ import { ReviewData } from "@lib/db";
 
 export * from "./useUser";
 export * from "./useCart";
-export * from "./useAddThenFetchReview";
-export * from "./useGetReviews";
+export * from "./useReviews";
 
 export type ApiResponse = {
   success: boolean;
