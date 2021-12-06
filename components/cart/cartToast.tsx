@@ -8,7 +8,6 @@ type Props = {
 };
 
 const CartToast = ({ id, visible, name, imagesrc }: Props) => {
-  console.log("props", id, visible, name, imagesrc);
   return (
     <div
       className={`${
