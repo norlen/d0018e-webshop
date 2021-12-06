@@ -76,7 +76,13 @@ const Navigation = () => {
         </div>
       </div>
 
-      <form className="relative w-full max-w-xs" onSubmit={() => search()}>
+      <form
+        className="relative w-full max-w-xs"
+        onSubmit={(e) => {
+          e.preventDefault();
+          search();
+        }}
+      >
         <input
           type="search"
           name="search"

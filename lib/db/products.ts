@@ -162,10 +162,14 @@ export const searchProducts = async (query: string) => {
          p.quantity,
          p.price,
          p.image_url,
-         'test' as category,
-         'test' as producer,
+         c.name as category,
+         pr.name as producer,
          ts_rank_cd(p.document_tokens, query) AS rank
-  FROM products AS p, to_tsquery($1) query
+  FROM
+    products AS p
+      INNER JOIN category AS c on c.id = p.category_id
+      INNER JOIN producer AS pr on pr.id = p.producer_id,
+    to_tsquery($1) AS query
   WHERE
     p.document_tokens @@ query
   ORDER BY rank DESC
