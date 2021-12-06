@@ -38,7 +38,7 @@ export const useSignup = () => {
 
 export type CartAddRequest = {
   productId: string;
-  quantity: number;
+  amount: number;
 };
 
 export const useAddToCart = () => {
