@@ -34,13 +34,7 @@ function PopUp({ productId, onAddedReview }: Props) {
   });
 
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        onSubmit();
-      }}
-      className="flex flex-col gap-4"
-    >
+    <form onSubmit={onSubmit} className="flex flex-col gap-4">
       <div className="flex flex-col gap-1">
         <label
           className="block text-sm font-medium w-full text-gray-700"
