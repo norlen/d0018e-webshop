@@ -1,20 +1,28 @@
 import { useAddReview } from "@lib/hooks";
-import { useState } from "react";
 import { ReviewData } from "@lib/db";
-import Error from "@components/error/error";
+import { Error, Button, InputError } from "@components/common";
+import { useForm } from "react-hook-form";
 
 type Props = {
   productId: string;
   onAddedReview: (review: ReviewData) => void;
 };
 
+type FormData = {
+  grade: number;
+  comment: string;
+};
+
 function PopUp({ productId, onAddedReview }: Props) {
   const { loading, error, addReview } = useAddReview();
 
-  const [grade, setGrade] = useState(0);
-  const [comment, setComment] = useState("");
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid },
+  } = useForm<FormData>({ mode: "onTouched" });
 
-  const onSubmit = async () => {
+  const onSubmit = handleSubmit(async ({ grade, comment }) => {
     const result = await addReview({
       productId,
       grade,
@@ -23,7 +31,7 @@ function PopUp({ productId, onAddedReview }: Props) {
     if (result.success) {
       onAddedReview(result);
     }
-  };
+  });
 
   return (
     <form
@@ -31,39 +39,61 @@ function PopUp({ productId, onAddedReview }: Props) {
         e.preventDefault();
         onSubmit();
       }}
+      className="flex flex-col gap-4"
     >
-      <div className="relative w-full mb-3">
+      <div className="flex flex-col gap-1">
+        <label
+          className="block text-sm font-medium w-full text-gray-700"
+          htmlFor="grade"
+        >
+          Betyg
+        </label>
         <input
+          id="grade"
           type="number"
-          className="input w-full rounded-lg px-4 py-2 border border-gray-500 focus:outline-none focus:border-green-500 active:outline-none"
+          className="se-input autofocus"
           placeholder="Betyg: (0 - 5)"
-          onChange={(e) => setGrade(parseInt(e.target.value))}
+          {...register("grade", {
+            required: "Ett betyg måste sättas",
+            min: { value: 0, message: "Minsta betyget som kan sättas är 0" },
+            max: { value: 5, message: "Kan inte sätta betyg högre än 5" },
+          })}
+          aria-invalid={errors.grade ? "true" : "false"}
         />
+        {errors.grade && <InputError>{errors.grade.message}</InputError>}
       </div>
 
-      <div className="relative w-full mb-3">
-        <input
-          type="text"
-          className="input w-full rounded-lg px-4 py-6 border border-gray-500 focus:outline-none focus:border-green-500 active:outline-none h-30"
+      <div className="flex flex-col gap-1">
+        <label
+          className="block text-sm font-medium w-full text-gray-700"
+          htmlFor="comment"
+        >
+          Recension
+        </label>
+        <textarea
+          id="comment"
           placeholder="Kommentar"
-          onChange={(e) => setComment(e.target.value)}
+          className="se-input"
+          {...register("comment", {
+            required: "En recension måste finnas",
+            minLength: { value: 5, message: "Skriv lite mer vad du tycker" },
+            maxLength: {
+              value: 1000,
+              message: "Kommentaren är för lång, håll den under 1000 tecken",
+            },
+          })}
+          aria-invalid={errors.comment ? "true" : "false"}
         />
+        {errors.comment && <InputError>{errors.comment.message}</InputError>}
       </div>
 
-      <button
-        className={`w-full text-center bg-green-500 hover:bg-green-700 rounded-lg text-white py-2 px-4 font-medium ${
-          loading ? "disable opacity-50 hover:bg-green-500" : ""
-        }`}
-        disabled={loading}
-      >
-        {loading ? "Skapar recension..." : "Skapa recension"}
-      </button>
+      <Button
+        text="Skapa recension"
+        loadingText="Skapar recension..."
+        loading={loading}
+        disabled={!isValid}
+      />
       <Error message={error} />
-      {error && (
-        <span className="bg-red-200 rounded-md text-center py-1 text-sm border-red-500 border mt-2 w-full">
-          {error}
-        </span>
-      )}
     </form>
   );
 }
