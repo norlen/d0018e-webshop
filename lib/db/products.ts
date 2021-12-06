@@ -7,6 +7,7 @@ export type Product = {
   quantity: number;
   price: number;
   image_url: string;
+  producerid: string;
   category: string;
   producer: string;
 };
@@ -104,14 +105,36 @@ export const getProductById = async (
          p.quantity,
          p.price,
          p.image_url,
+         p.producer_id as producerId,
          c.name as category,
-         pr.name as producer 
+         pr.name as producer
   FROM products AS p 
   JOIN category AS c on c.id = p.category_id
   JOIN producer AS pr on pr.id = p.producer_id 
   WHERE p.id = $1;`;
 
   return await getSingleRow(sql, [id]);
+};
+
+export const getProductsByProducerId = async (
+  producerId: string
+): Promise<Product[]> => {
+  const sql = `
+  SELECT p.id,
+         p.name,
+         p.description,
+         p.quantity,
+         p.price,
+         p.image_url,
+         p.producer_id as producerId,
+         c.name as category,
+         pr.name as producer
+  FROM products as p
+  JOIN category AS c on c.id = p.category_id
+  JOIN producer AS pr on pr.id = p.producer_id
+  WHERE p.producer_id = $1
+  ORDER BY id DESC;`;
+  return await getMultipleRows(sql, [producerId]);
 };
 
 export const getProductsAll = async (): Promise<Product[]> => {
@@ -122,13 +145,13 @@ export const getProductsAll = async (): Promise<Product[]> => {
          p.quantity,
          p.price,
          p.image_url,
+         p.producer_id as producerId,
          c.name as category,
          pr.name as producer
   FROM products as p
     JOIN category AS c on c.id = p.category_id
     JOIN producer AS pr on pr.id = p.producer_id
   ORDER BY id DESC;`;
-
   return await getMultipleRows(sql);
 };
 
@@ -142,6 +165,7 @@ export const getProductsByCategory = async (
          p.quantity,
          p.price,
          p.image_url,
+         p.producer_id as producerId,
          c.name as category,
          pr.name as producer
   FROM category as c
@@ -150,7 +174,6 @@ export const getProductsByCategory = async (
   WHERE
     c.name = $1
   ORDER BY id DESC;`;
-
   return await getMultipleRows(sql, [category.toLowerCase()]);
 };
 

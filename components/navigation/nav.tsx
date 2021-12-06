@@ -26,11 +26,11 @@ const navigation = {
       name: "Kött",
       href: "/kategori/kött/",
     },
-    // {
-    //   id: "producers",
-    //   name: "Producenter",
-    //   href: "/producenter/",
-    // },
+    {
+      id: "producers",
+      name: "Producenter",
+      href: "/producenter/",
+    },
     {
       id: "about",
       name: "Om oss",
