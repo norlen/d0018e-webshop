@@ -4,27 +4,15 @@ import BuyButton from "./buyButton";
 import EditPage from "./editProductPage";
 import { getStock } from "@lib/util";
 import StockStatus from "./stockStatus";
+import { Product } from "@lib/db";
 
 type Props = {
-  product: {
-    id: string;
-    name: string;
-    category: string;
-    quantity: string;
-    producer: string;
-    description: string;
-    price: string;
-    image_url: string;
-  };
+  product: Product;
 };
 
 const ProductC = ({ product }: Props) => {
   const { user } = useUser();
-  const { cartItems } = useCart();
-
-  const diff = cartItems[product.id]?.quantity || 0;
-  const finalQuantity = parseInt(product.quantity) - diff;
-  const [amount, stock] = getStock(finalQuantity);
+  const [amount, stock] = getStock(product.quantity);
 
   // Special page for admins.
   if (user && user.isAdmin) {
@@ -58,13 +46,7 @@ const ProductC = ({ product }: Props) => {
 
           <div className="flex gap-4">
             <StockStatus amount={amount} text={stock} className="mt-1" />
-            <BuyButton
-              productId={product.id}
-              user={user}
-              quantity={amount}
-              name={product.name}
-              imagesrc={product.image_url}
-            />
+            <BuyButton product={product} user={user} />
           </div>
         </div>
       </div>

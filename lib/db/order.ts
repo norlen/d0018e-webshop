@@ -21,7 +21,7 @@ export type OrderItem = {
   producer: string;
   category: string;
   price: number;
-  quantity: number;
+  amount: number;
   imageurl: string;
 };
 
@@ -94,8 +94,8 @@ export const getOrderItems = async (orderId: string): Promise<OrderItem[]> => {
          c.name AS category,
          pr.name AS producer,
          o.price,
-         o.quantity,
-         p.image_url AS imageUrl
+         o.quantity AS amount,
+         p.image_url AS imageurl
   FROM order_products AS o
     INNER JOIN products AS p ON p.id = o.product_id
     INNER JOIN category AS c ON c.id = p.category_id
@@ -116,7 +116,7 @@ export type CustomerInfo = {
 
 export type CreateOrderItem = {
   id: string;
-  quantity: number;
+  amount: number;
 };
 
 export const createOrder = async (
@@ -188,7 +188,7 @@ export const createOrder = async (
       const res = await client.query(createOrderItemSql, [
         orderId,
         item.id,
-        item.quantity,
+        item.amount,
       ]);
       if (res.rows.length > 0) {
         total += parseInt(res.rows[0].price);
