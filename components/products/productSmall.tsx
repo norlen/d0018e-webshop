@@ -4,27 +4,15 @@ import BuyButton from "./buyButton";
 import { useUser, useCart } from "@lib/hooks";
 import { cutoff, getStock } from "@lib/util";
 import StockStatus from "./stockStatus";
+import { Product } from "@lib/db";
 
 type Props = {
-  product: {
-    id: string;
-    name: string;
-    category: string;
-    quantity: string;
-    producer: string;
-    description: string;
-    price: string;
-    image_url: string;
-  };
+  product: Product;
 };
 
 const ProductSmall = ({ product }: Props) => {
   const { user } = useUser();
-  const { cartItems } = useCart();
-
-  const diff = cartItems[product.id]?.quantity || 0;
-  const finalQuantity = parseInt(product.quantity) - diff;
-  const [amount, stock] = getStock(finalQuantity);
+  const [amount, stock] = getStock(product.quantity);
 
   return (
     <div className="flex gap-4 flex-col max-w-sm bg-white rounded-lg shadow-md">
@@ -53,13 +41,7 @@ const ProductSmall = ({ product }: Props) => {
         </Link>
         <div className="flex gap-6">
           <p className="font-medium pt-1">{product.price} kr/kg</p>
-          <BuyButton
-            productId={product.id}
-            user={user}
-            quantity={amount}
-            name={product.name}
-            imagesrc={product.image_url}
-          />
+          <BuyButton product={product} user={user} />
         </div>
       </div>
     </div>

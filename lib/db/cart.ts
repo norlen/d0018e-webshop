@@ -3,24 +3,24 @@ import { getMultipleRows, run } from "./connection";
 export type CartItem = {
   id: string;
   name: string;
-  in_stock: number;
   price: number;
+  quantity: number;
   producer: string;
   category: string;
   image_url: string;
-  quantity: number;
+  amount: number;
 };
 
 export const getCartByUserId = async (id: string): Promise<CartItem[]> => {
   const sql = `
   SELECT p.id,
          p.name,
-         p.quantity > 0 AS in_stock,
          p.price,
+         p.quantity,
          pr.name AS producer,
          c.name AS category,
          p.image_url,
-         cart.quantity
+         cart.quantity AS amount
   FROM cart
     INNER JOIN products AS p ON cart.product_id = p.id
     INNER JOIN category AS c ON p.category_id = c.id

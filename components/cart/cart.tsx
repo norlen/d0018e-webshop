@@ -95,7 +95,7 @@ const Cart = () => {
                         <p>Totalt</p>
                         <p>
                           {cart
-                            .map((i) => i.price * i.quantity)
+                            .map((i) => i.price * i.amount)
                             .reduce((acc, v) => acc + v, 0)}{" "}
                           kr
                         </p>

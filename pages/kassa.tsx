@@ -32,11 +32,11 @@ const CheckoutPage: NextPage = () => {
   } = useForm<FormData>({ mode: "onTouched" });
 
   const subtotal = cart
-    .map((i) => i.price * i.quantity)
+    .map((i) => i.price * i.amount)
     .reduce((acc, v) => acc + v, 0);
 
   const onSubmit = handleSubmit(async (data) => {
-    const cartItems = cart.map((c) => ({ id: c.id, quantity: c.quantity }));
+    const cartItems = cart.map((c) => ({ id: c.id, quantity: c.amount }));
 
     const result = await addOrder({ ...data, subtotal, cart: cartItems });
     if (result.success) {
@@ -311,10 +311,8 @@ const CartItem = ({ item }: CartItemProps) => {
             </h3>
             <p className="">{item.price} kr/kg</p>
           </div>
-          <p className="text-gray-500">Antal {item.quantity}</p>
-          <p className="text-gray-500">
-            Totalt {item.quantity * item.price} kr
-          </p>
+          <p className="text-gray-500">Antal {item.amount}</p>
+          <p className="text-gray-500">Totalt {item.amount * item.price} kr</p>
         </div>
         <div className="flex-1 flex items-end justify-between text-sm">
           <button

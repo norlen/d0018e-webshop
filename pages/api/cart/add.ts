@@ -7,12 +7,12 @@ import Joi from "joi";
 
 const createSchema = Joi.object({
   productId: Joi.number().min(0),
-  quantity: Joi.number().min(1).max(100),
+  amount: Joi.number().min(1).max(100),
 });
 
 /// Adds a single product to the cart.
 ///
-/// If the product already exists in the cart, the quantity in incremented instead.
+/// If the product already exists in the cart, the amount in incremented instead.
 const cartAddRoute = async (
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse<void>>
@@ -20,11 +20,8 @@ const cartAddRoute = async (
   try {
     const userId = getAuth(req).id;
 
-    const { productId, quantity } = await createSchema.validateAsync({
-      productId: req.body.productId,
-      quantity: req.body.quantity,
-    });
-    await addToCart(userId, productId, quantity);
+    const { productId, amount } = await createSchema.validateAsync(req.body);
+    await addToCart(userId, productId, amount);
     res.status(200).json({ success: true });
   } catch (error) {
     writeErrorResponse(res, error as Error);

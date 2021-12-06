@@ -2,18 +2,10 @@ import { useDeleteProduct, useUpdateProduct, useUser } from "@lib/hooks";
 import { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import { Product } from "@lib/db";
 
 type Props = {
-  product: {
-    id: string;
-    name: string;
-    category: string;
-    quantity: string;
-    producer: string;
-    description: string;
-    price: string;
-    image_url: string;
-  };
+  product: Product;
 };
 
 const EditPage = ({ product }: Props) => {

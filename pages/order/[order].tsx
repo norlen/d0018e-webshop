@@ -59,7 +59,7 @@ const ProductPage: NextPage<SSRProps> = ({ order }) => {
               <p>Totalt</p>
               <p>
                 {order.items
-                  .map((i) => i.price * i.quantity)
+                  .map((i) => i.price * i.amount)
                   .reduce((acc, v) => acc + v, 0)}{" "}
                 kr
               </p>
@@ -98,10 +98,8 @@ const CartItem = ({ item }: OrderItemProps) => {
             </h3>
             <p className="">{item.price} kr/kg</p>
           </div>
-          <p className="text-gray-500">Antal {item.quantity}</p>
-          <p className="text-gray-500">
-            Totalt {item.quantity * item.price} kr
-          </p>
+          <p className="text-gray-500">Antal {item.amount}</p>
+          <p className="text-gray-500">Totalt {item.amount * item.price} kr</p>
         </div>
       </div>
     </>
