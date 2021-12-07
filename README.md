@@ -1,10 +1,11 @@
 # Shop
 
-MVP for a made up web shop 
+An imaginary e-commerce website that sells ecological fruits, vegetables and meats. Demo available at [Sebbes ekologiska](https://sebbes-ekologiska.vercel.app/).
 
 ## Tech stack
 
 - Frontend framework: [Next.js](https://nextjs.org/)
+- Database: [postgresql](https://www.postgresql.org/)
 - Styling: [Tailwind CSS](https://tailwindcss.com/)
 - For database connection: [pg](https://github.com/brianc/node-postgres/)
 - Databse migrations: [db-migrate](https://github.com/db-migrate/node-db-migrate)
