@@ -30,13 +30,13 @@ $BODY$;
 
 -- Create trigger that updates the search data whenever the affected columns are updated.
 CREATE TRIGGER search_value_update
-    BEFORE UPDATE OF name, category_id, description, producer_id
+    BEFORE UPDATE OF "name", "category_id", "description", "producer_id"
     ON products
     FOR EACH ROW
-    EXECUTE FUNCTION update_product_full_text_search_vector();
+    EXECUTE FUNCTION set_product_search_data();
 
 -- Create trigger that updates the search data when a new product is inserted.
 CREATE TRIGGER search_value_new_product
     BEFORE INSERT ON products
     FOR EACH ROW
-    EXECUTE FUNCTION update_product_full_text_search_vector();
+    EXECUTE FUNCTION set_product_search_data();
