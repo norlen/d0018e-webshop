@@ -13,7 +13,8 @@
   }
 
   .se-input {
-    @apply w-full rounded-lg px-4 py-2 border border-gray-500;
-    @apply focus:outline-none active:outline-none;
+    @apply w-full rounded-lg px-4 py-2 border border-gray-300 text-gray-700;
+    @apply focus:outline-none active:outline-none focus:ring ring-green-300;
+    @apply focus:border-green-400;
   }
 }
