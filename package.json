@@ -12,6 +12,7 @@
     "@heroicons/react": "^1.0.5",
     "@tailwindcss/aspect-ratio": "^0.3.0",
     "bcrypt": "^5.0.1",
+    "db-migrate-pg": "^1.2.2",
     "formidable": "^2.0.1",
     "iron-session": "^6.0.4",
     "joi": "^17.5.0",
