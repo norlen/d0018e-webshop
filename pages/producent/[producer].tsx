@@ -23,12 +23,7 @@ const ProducerPage: NextPage<StaticProps> = ({ producer, products }) => {
       </Head>
       <main className="flex py-2 lg:py-8 lg:px-12 justify-center">
         <div className="w-full">
-          {/*         <!--
-            ! ------------------------------------------------------------
-            ! Profile banner and avatar
-            ! ------------------------------------------------------------
-            !--> */}
-
+          {/*  Profile banner and avatar */}
           <div className="w-full">
             <div className="w-full bg-green-400 h-48 rounded-t-lg"></div>
             <div className="absolute -mt-20 ml-5">
@@ -43,20 +38,20 @@ const ProducerPage: NextPage<StaticProps> = ({ producer, products }) => {
             </div>
           </div>
 
-          {/*         <!--
-            ! ------------------------------------------------------------
-            ! Profile general information
-            ! ------------------------------------------------------------
-            !--> */}
+          {/* Profile general information */}
           <div className="bg-primary border border-primary rounded-b-lg p-5 pt-20 flex flex-col">
             <div className="mb-1 h-5 w-90">{producer.name}</div>
             <div className="mb-1 h-5 w-96">LastName?</div>
             <div className="mb-1 h-5 w-44">Here are our products:</div>
 
             <div className="flex flex-wrap gap-10 justify-center">
-              {products.map((product) => {
-                return <ProductSmall key={product.id} product={product} />;
-              })}
+              {products.length > 0 ? (
+                products.map((product) => {
+                  return <ProductSmall key={product.id} product={product} />;
+                })
+              ) : (
+                <h1>Tyvärr har vi inga produkter än...</h1>
+              )}
             </div>
           </div>
         </div>
@@ -82,19 +77,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
   // The producer might not have any products for sale
   if (products.length === 0) {
-    products = [
-      {
-        id: "",
-        name: "",
-        description: "",
-        quantity: "",
-        price: "",
-        image_url: "",
-        category: "",
-        producer: "",
-        producerid: "",
-      },
-    ];
+    products = [];
   }
   if (producer === undefined) {
     return { notFound: true };
