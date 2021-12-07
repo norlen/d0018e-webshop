@@ -41,10 +41,9 @@ const ProducerPage: NextPage<StaticProps> = ({ producer, products }) => {
           {/* Profile general information */}
           <div className="bg-primary border border-primary rounded-b-lg p-5 pt-20 flex flex-col">
             <div className="mb-1 h-5 w-90">{producer.name}</div>
-            <div className="mb-1 h-5 w-96">LastName?</div>
-            <div className="mb-1 h-5 w-44">Here are our products:</div>
 
             <div className="flex flex-wrap gap-10 justify-center">
+              <div className="mb-1 h-5 w-96">{producer.description}</div>
               {products.length > 0 ? (
                 products.map((product) => {
                   return <ProductSmall key={product.id} product={product} />;
