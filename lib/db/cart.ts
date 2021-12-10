@@ -20,13 +20,16 @@ export const getCartByUserId = async (id: string): Promise<CartItem[]> => {
          pr.name AS producer,
          c.name AS category,
          p.image_url,
-         cart.quantity AS amount
+         cart.quantity AS amount,
+         created_at
   FROM cart
     INNER JOIN products AS p ON cart.product_id = p.id
     INNER JOIN category AS c ON p.category_id = c.id
     INNER JOIN producer AS pr ON p.producer_id = pr.id
   WHERE
-    cart.user_id = $1;
+    cart.user_id = $1
+  ORDER BY
+    created_at ASC;
   `;
 
   return await getMultipleRows(sql, [id]);
