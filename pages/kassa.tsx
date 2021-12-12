@@ -36,7 +36,7 @@ const CheckoutPage: NextPage = () => {
     .reduce((acc, v) => acc + v, 0);
 
   const onSubmit = handleSubmit(async (data) => {
-    const cartItems = cart.map((c) => ({ id: c.id, quantity: c.amount }));
+    const cartItems = cart.map((c) => ({ id: c.id, amount: c.amount }));
 
     const result = await addOrder({ ...data, subtotal, cart: cartItems });
     if (result.success) {
