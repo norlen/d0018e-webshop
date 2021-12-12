@@ -30,7 +30,7 @@ export const addReview = async (
     )
     VALUES
       ($1, $2, $3, $4)
-      RETURNING id, comment, grade, TO_CHAR(created_at, 'YYYY Mon DD HH24:MI') AS created_at;
+      RETURNING id, comment, grade, created_at;
     `;
   let data = undefined;
   await run(async (client) => {
@@ -62,7 +62,7 @@ export const getAllProductReviews = async (
   SELECT us.name,
          re.grade,
          re.comment,
-         TO_CHAR(re.created_at, 'YYYY Mon DD HH24:MI') created_at
+         created_at
   FROM review AS re
     INNER JOIN users AS us ON us.id = re.user_id
   WHERE re.product_id = $1

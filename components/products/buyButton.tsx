@@ -10,21 +10,33 @@ import { Button } from "@components/common";
 type Props = {
   product: Product;
   user?: User;
+  amount?: number;
 };
 
-const BuyButton = ({ product, user }: Props) => {
+const BuyButton = ({ product, user, amount }: Props) => {
   if (user && user.isLoggedIn) {
-    return <CustomerBuyButton isAdmin={user.isAdmin} product={product} />;
+    return (
+      <CustomerBuyButton
+        isAdmin={user.isAdmin}
+        product={product}
+        amount={amount}
+      />
+    );
   }
-  return <VisitorBuyButton />;
+  return <VisitorBuyButton amount={amount} />;
 };
 
 type CustomerButtonProps = {
   isAdmin: boolean;
   product: Product;
+  amount?: number;
 };
 
-const CustomerBuyButton = ({ isAdmin, product }: CustomerButtonProps) => {
+const CustomerBuyButton = ({
+  isAdmin,
+  product,
+  amount,
+}: CustomerButtonProps) => {
   const { cart, cartItems, mutateCart } = useCart();
   const { error, addToCart } = useAddToCart();
 
@@ -74,7 +86,7 @@ const CustomerBuyButton = ({ isAdmin, product }: CustomerButtonProps) => {
 
   return (
     <Button
-      text="Köp 1 kg"
+      text={amount !== undefined ? "Köp" : "Köp 1 kg"}
       loadingText=""
       loading={false}
       disabled={product.quantity <= 0}
@@ -84,10 +96,10 @@ const CustomerBuyButton = ({ isAdmin, product }: CustomerButtonProps) => {
   );
 };
 
-const VisitorBuyButton = () => (
+const VisitorBuyButton = ({ amount }: { amount?: number }) => (
   <button className="py-2 px-4 rounded-md shadow-md bg-green-300 hover:bg-green-500">
     <Link href="/login">
-      <a>Köp 1 kg</a>
+      <a>{amount !== undefined ? "Köp" : "Köp 1 kg"}</a>
     </Link>
   </button>
 );

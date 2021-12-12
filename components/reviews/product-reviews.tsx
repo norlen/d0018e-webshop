@@ -1,9 +1,8 @@
 import { useReviews } from "@lib/hooks";
 import { useState } from "react";
-import Reviews from "@components/reviewcomponents/Reviews";
-import AddReview from "@components/reviewcomponents/AddReview";
-import PopUp from "@components/reviewcomponents/PopUp";
+import CreateReview from "@components/reviews/create-review";
 import { Dialog } from "@headlessui/react";
+import Review from "./review";
 
 type Props = {
   productId: string;
@@ -14,23 +13,51 @@ function ReviewComponent({ productId }: Props) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div>
-      <div className="pt-8 pb-6 mx-auto max-w-full md:max-w-5xl">
-        <div className="flex gap-4 bg-white rounded-lg overflow-auto">
-          <div className="w-96 h-auto rounded-l-lg overflow-hidden relative">
-            <AddReview onClick={() => setIsOpen(true)} />
-          </div>
-          <div className="flex flex-col justify-evenly w-10/12 pr-8 py-4">
-            {reviews && reviews.length > 0 ? (
-              <Reviews rews={reviews} />
-            ) : (
-              <p className="text-center text-green-500 font-sans font-bold text-base">
-                Inga recensioner för tillfället.
-              </p>
-            )}
-          </div>
-        </div>
+    <div className="flex flex-col gap-4">
+      <div className="flex flex-col w-full gap-8 bg-white mt-4 rounded-lg px-4 py-4">
+        <h1 className="text-green-500 text-xl">Kundrecensioner</h1>
+        {reviews && reviews.length > 0 ? (
+          reviews.map((review) => (
+            <Review
+              key={review.id}
+              name={review.name}
+              grade={review.grade}
+              comment={review.comment}
+              created_at={review.created_at}
+            />
+          ))
+        ) : (
+          <p className="text-center text-green-500 font-sans font-bold text-base">
+            Bli den första att recensera denna produkt!
+          </p>
+        )}
       </div>
+      <div className="w-full flex flex-col gap-2 items-center bg-white mt-4 rounded-lg px-4 py-4">
+        <h1 className="text-green-500 text-xl mt-2">
+          Har du tankar om produkten? Dela dina insikter
+        </h1>
+        <div className="text-sm flex flex-col gap-1">
+          <p className="">
+            Vi ser väldigt gärna att du delar med dig dina tankar och
+            funderingar.
+          </p>
+          <p>
+            Var det här den <span className="font-bold">bästa</span> produkten
+            du någonsin smakat? Eller var det ingen höjdare?
+          </p>
+          <p>
+            Oavsett vad du tycker och tänker, dela gärna med dig så vi kan bli
+            ännu bättre och hjälpa världen ännu mer.
+          </p>
+        </div>
+        <button
+          className={`bg-green-500 w-60 text-center hover:bg-green-700 rounded-lg text-white py-2 px-3 font-medium mt-2`}
+          onClick={() => setIsOpen(true)}
+        >
+          Skriv en recension
+        </button>
+      </div>
+
       <Dialog
         open={isOpen}
         onClose={() => setIsOpen(false)}
@@ -58,16 +85,13 @@ function ReviewComponent({ productId }: Props) {
                 </Dialog.Description>
               </div>
 
-              <PopUp
+              <CreateReview
                 productId={productId}
                 onAddedReview={(review) => {
                   mutateReviews([review, ...(reviews || [])]);
                   setIsOpen(false);
                 }}
               />
-
-              {/* <button onClick={() => setIsOpen(false)}>Deactivate</button>
-              <button onClick={() => setIsOpen(false)}>Cancel</button> */}
             </div>
           </div>
         </div>
