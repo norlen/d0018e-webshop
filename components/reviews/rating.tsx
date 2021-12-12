@@ -11,12 +11,14 @@ const idx = [1, 2, 3, 4, 5];
 const Rating = ({ rating }: Props) => (
   <div className="flex">
     {rating < 1
-      ? idx.map(() => <StarIcon className="w-4 h-4 text-gray-500" />)
+      ? idx.map((value) => (
+          <StarIcon key={value} className="w-4 h-4 text-gray-500" />
+        ))
       : idx.map((value) =>
           value <= rating ? (
-            <SolidStarIcon className="w-4 h-4 text-yellow-300" />
+            <SolidStarIcon key={value} className="w-4 h-4 text-yellow-300" />
           ) : (
-            <StarIcon className="w-4 h-4 text-yellow-300" />
+            <StarIcon key={value} className="w-4 h-4 text-yellow-300" />
           )
         )}
   </div>
