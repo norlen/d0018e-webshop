@@ -10,6 +10,7 @@ export type Product = {
   producerid: string;
   category: string;
   producer: string;
+  rating: number;
 };
 
 // returns boolean to indicate if an update was made or not.
@@ -107,10 +108,16 @@ export const getProductById = async (
          p.image_url,
          p.producer_id as producerId,
          c.name as category,
-         pr.name as producer
-  FROM products AS p 
-  JOIN category AS c on c.id = p.category_id
-  JOIN producer AS pr on pr.id = p.producer_id 
+         pr.name as producer,
+         COALESCE(r.rating, 0) AS rating
+  FROM products AS p
+    JOIN category AS c on c.id = p.category_id
+    JOIN producer AS pr on pr.id = p.producer_id,
+    (
+      SELECT AVG(review.grade) AS rating
+      FROM review
+      WHERE review.product_id = $1
+    ) AS r
   WHERE p.id = $1;`;
 
   return await getSingleRow(sql, [id]);

@@ -2,6 +2,8 @@ import { useAddReview } from "@lib/hooks";
 import { ReviewData } from "@lib/db";
 import { Error, Button, InputError } from "@components/common";
 import { useForm } from "react-hook-form";
+import { RatingInput } from "./rating";
+import { useState } from "react";
 
 type Props = {
   productId: string;
@@ -9,12 +11,12 @@ type Props = {
 };
 
 type FormData = {
-  grade: number;
   comment: string;
 };
 
-function PopUp({ productId, onAddedReview }: Props) {
+const CreateReview = ({ productId, onAddedReview }: Props) => {
   const { loading, error, addReview } = useAddReview();
+  const [rating, setRating] = useState(1);
 
   const {
     register,
@@ -22,10 +24,10 @@ function PopUp({ productId, onAddedReview }: Props) {
     formState: { errors, isValid },
   } = useForm<FormData>({ mode: "onTouched" });
 
-  const onSubmit = handleSubmit(async ({ grade, comment }) => {
+  const onSubmit = handleSubmit(async ({ comment }) => {
     const result = await addReview({
       productId,
-      grade,
+      grade: Math.max(1, Math.min(5, rating)), // Clamp to [1,5].
       comment,
     });
     if (result.success) {
@@ -36,25 +38,8 @@ function PopUp({ productId, onAddedReview }: Props) {
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-4">
       <div className="flex flex-col gap-1">
-        <label
-          className="block text-sm font-medium w-full text-gray-700"
-          htmlFor="grade"
-        >
-          Betyg
-        </label>
-        <input
-          id="grade"
-          type="number"
-          className="se-input autofocus"
-          placeholder="Betyg: (0 - 5)"
-          {...register("grade", {
-            required: "Ett betyg måste sättas",
-            min: { value: 0, message: "Minsta betyget som kan sättas är 0" },
-            max: { value: 5, message: "Kan inte sätta betyg högre än 5" },
-          })}
-          aria-invalid={errors.grade ? "true" : "false"}
-        />
-        {errors.grade && <InputError>{errors.grade.message}</InputError>}
+        <p className="block text-sm font-medium w-full text-gray-700">Betyg</p>
+        <RatingInput rating={rating} setRating={setRating} />
       </div>
 
       <div className="flex flex-col gap-1">
@@ -90,6 +75,6 @@ function PopUp({ productId, onAddedReview }: Props) {
       <Error message={error} />
     </form>
   );
-}
+};
 
-export default PopUp;
+export default CreateReview;
