@@ -1,14 +1,16 @@
-import { useReviews } from "@lib/hooks";
+import { useReviews, useUser } from "@lib/hooks";
 import { useState } from "react";
 import CreateReview from "@components/reviews/create-review";
 import { Dialog } from "@headlessui/react";
 import Review from "./review";
+import Link from "next/link";
 
 type Props = {
   productId: string;
 };
 
 function ReviewComponent({ productId }: Props) {
+  const { user } = useUser();
   const { reviews, mutateReviews } = useReviews(productId);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -28,13 +30,13 @@ function ReviewComponent({ productId }: Props) {
           ))
         ) : (
           <p className="text-center text-green-500 font-sans font-bold text-base">
-            Bli den första att recensera denna produkt!
+            Bli först med att recensera denna produkt!
           </p>
         )}
       </div>
       <div className="w-full flex flex-col gap-2 items-center bg-white mt-4 rounded-lg px-4 py-4">
         <h1 className="text-green-500 text-xl mt-2">
-          Har du tankar om produkten? Dela dina insikter
+          Har du tankar om produkten? Dela dina åsikter
         </h1>
         <div className="text-sm flex flex-col gap-1">
           <p className="">
@@ -50,12 +52,22 @@ function ReviewComponent({ productId }: Props) {
             ännu bättre och hjälpa världen ännu mer.
           </p>
         </div>
-        <button
-          className={`bg-green-500 w-60 text-center hover:bg-green-700 rounded-lg text-white py-2 px-3 font-medium mt-2`}
-          onClick={() => setIsOpen(true)}
-        >
-          Skriv en recension
-        </button>
+        {user && user.isLoggedIn ? (
+          <button
+            className={`bg-green-500 w-60 text-center hover:bg-green-700 rounded-lg text-white py-2 px-3 font-medium mt-2`}
+            onClick={() => setIsOpen(true)}
+          >
+            Skriv en recension
+          </button>
+        ) : (
+          <Link href="/login">
+            <a
+              className={`bg-green-500 w-60 text-center hover:bg-green-700 rounded-lg text-white py-2 px-3 font-medium mt-2`}
+            >
+              Logga in för att recensera
+            </a>
+          </Link>
+        )}
       </div>
 
       <Dialog
