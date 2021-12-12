@@ -122,7 +122,7 @@ export type OrderAddRequest = {
   phoneNumber: string;
   cart: {
     id: string;
-    quantity: number;
+    amount: number;
   }[];
   subtotal: number;
 };
