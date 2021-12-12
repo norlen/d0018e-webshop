@@ -7,6 +7,7 @@ import StockStatus from "./stockStatus";
 import { Product } from "@lib/db";
 import { useState } from "react";
 import Rating from "@components/reviews/rating";
+import Link from "next/link";
 
 type Props = {
   product: Product;
@@ -46,11 +47,19 @@ const ProductC = ({ product }: Props) => {
           <div className="flex gap-8">
             <div className="flex flex-col">
               <span className="text-xs text-green-500">Kategori</span>
-              <span className="font-medium capitalize">{product.category}</span>
+              <Link href={`/kategori/${product.category}`}>
+                <a className="font-medium capitalize hover:text-green-300">
+                  {product.category}
+                </a>
+              </Link>
             </div>
             <div className="flex flex-col ml-8">
               <span className="text-xs text-green-500">Producent</span>
-              <span className="font-medium">{product.producer}</span>
+              <Link href={`/producent/${product.producerid}`}>
+                <a className="font-medium hover:text-green-300">
+                  {product.producer}
+                </a>
+              </Link>
             </div>
             <div className="flex flex-col ml-8">
               <span className="text-xs text-green-500">Pris</span>
