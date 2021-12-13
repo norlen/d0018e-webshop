@@ -230,7 +230,6 @@ export const createOrder = async (
       orderId,
       userId,
     ]);
-    console.log("Result: ", res);
     if (res.rows.length == 0) {
       throw ApiInternalError();
     }

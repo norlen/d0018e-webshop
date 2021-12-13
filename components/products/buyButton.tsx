@@ -90,7 +90,7 @@ const CustomerBuyButton = ({
       loadingText=""
       loading={false}
       disabled={product.quantity <= 0}
-      onClick={() => addProduct(1)}
+      onClick={() => addProduct(amount || 1)}
       className="py-2 px-4 shadow-md w-24 h-10"
     />
   );

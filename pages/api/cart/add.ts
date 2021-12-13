@@ -6,8 +6,8 @@ import { ApiResponse, writeErrorResponse, getAuth } from "@lib/api";
 import Joi from "joi";
 
 const createSchema = Joi.object({
-  productId: Joi.number().min(0),
-  amount: Joi.number().min(1).max(100),
+  productId: Joi.number().min(0).required(),
+  amount: Joi.number().min(1).max(100).required(),
 });
 
 /// Adds a single product to the cart.
