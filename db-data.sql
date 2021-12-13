@@ -2,12 +2,14 @@
 INSERT INTO Producer (
     name,
     image_url,
-    description
+    description,
+    location,
+    contact
 )
 VALUES
-    ('Sebbemanne', '/images/PhotoFunia-1638809703.jpg', 'Med tio år inom den ekologiska branschen ser vi oss som en ledande kraft i kampen att rädda världen. Våran ledare Sebastian "SebbeMannen" styr oss mot ett mer fridfullt samhälle där ekologisk kost är en grundsten. Våra produkter är helt utan konserveringsmedel och bekämpningsmedel.'), 
-    ('EcoGården', '/images/rajesh-ram-HOOKgN_zIY8-unsplash.jpg', 'På Ecogården är vårt mål att göra ekologisk mat lika billig som oekologisk mat. Att genomföra detta är inte lätt men till vår hjälp har vi vårat högteknologiska växthus i Vuollerim som gör att vi kan producera grönsaker och frukt året om!'), 
-    ('Bondgården', '/images/gregory-hayes-QFmNQXLPbZc-unsplash.jpg', 'Hos oss ser vi varje djur som en egen individ som har rättigheter. Vi tycker att djur ska ha samma förutsättningar som människor att leva ett bra liv innan de slaktas. Detta gör att vi kan producera ekologiskt kött med gott samvete.');
+    ('Sebbemannen', '/images/PhotoFunia-1638809703.jpg', 'Med tio år inom den ekologiska branschen ser vi oss som en ledande kraft i kampen att rädda världen. Våran ledare Sebastian "SebbeMannen" styr oss mot ett mer fridfullt samhälle där ekologisk kost är en grundsten. Våra produkter är helt utan konserveringsmedel och bekämpningsmedel.', 'Luleå', 'sebbe@sebbeseko.se'), 
+    ('EcoGården', '/images/rajesh-ram-HOOKgN_zIY8-unsplash.jpg', 'På Ecogården är vårt mål att göra ekologisk mat lika billig som oekologisk mat. Att genomföra detta är inte lätt men till vår hjälp har vi vårat högteknologiska växthus i Vuollerim som gör att vi kan producera grönsaker och frukt året om!', 'Vuollerim', 'ecogården@sebbeseko.se'), 
+    ('Bondgården', '/images/gregory-hayes-QFmNQXLPbZc-unsplash.jpg', 'Hos oss ser vi varje djur som en egen individ som har rättigheter. Vi tycker att djur ska ha samma förutsättningar som människor att leva ett bra liv innan de slaktas. Detta gör att vi kan producera ekologiskt kött med gott samvete.', 'Silicon Valley', 'bonden@sebbeseko.se');
 
 -- Insert categories
 INSERT INTO Category (name)
@@ -16,9 +18,7 @@ VALUES
     ('kött'),
     ('frukt');
 
-
 -- Insert products
-
 -- Frukt
 INSERT INTO Products (
     name,
@@ -35,7 +35,6 @@ VALUES
     ('Red delicous, äpple', 3, 99, 15, 'Ekologiska äpplen. Balanserad sötma viss syrlighet, fruktiga smaker av melon och blommiga toner. Krispig och frasig med spröd textur med viss saftighet.', 1, '/images/1560806887-1e4cd0b6cbd6.jpeg'),
     ('Bananer', 3, 19, 11, 'Ekologiska bananer odlade inomhus i Luleå, Norbotten. Smaken är väldigt söt med lite inslag av beskhet också.', 1, '/images/ioana-cristiana-0WW38q7lGZA-unsplash.jpg');
 
-
 -- Kött
 INSERT INTO Products (
     name,
@@ -51,7 +50,6 @@ VALUES
     ('Griskött', 2, 199, 199, 'Ekologiskt griskött. Ett saftigt kött med högt tuggmotstånd. Både hög doft- och smakintensitet, gör sig bäst till en kall Norrlands.', 3, '/images/kyle-mackie-MEnlQv-EQvY-unsplash.jpg'),
     ('T-bone steak', 2, 200, 299, 'Ekologiskt kött från nöt. Mycket saftigt, mjukt och mört kött. Hög smakintensitet och sötma med smak av buljong', 3, '/images/john-cameron-6-5Ul3I6vSE-unsplash.jpg');
  
-
 -- Grönsaker
 INSERT INTO Products (
     name,
@@ -65,5 +63,5 @@ INSERT INTO Products (
 VALUES
     ('Morötter', 1, 55, 10, 'Ekologiskt odlade morötter från vårt växthus i Vuollerim. Klar orange färg, smaken kan beskrivas som gudomlig.', 2, '/images/1598170845058-32b9d6a5da37.jpeg'),
     ('Grönkål', 1, 33, 10, 'Ekologiskt grönkål odlad i Luleå, Norbotten. Ljus och fin grön färg, utmärkt smak med tydliga inslag av nöt och jord.', 1, '/images/char-beck-5eM6sRTCCUc-unsplash.jpg'),
-    ('Gullök', 1, 25, 11, 'Ekologiskt odlad lök från vårt högteknologiska växthus i Vuollerim, Norbotten. OBS, tårarna sprutar när man hackar denna purfärska löken.', 2, '/images/lars-blankers-pmS8XSz5NU0-unsplash.jpg'),
+    ('Gullök', 1, 25, 11, 'Ekologiskt odlad lök från vårt högteknologiska växthus i Vuollerim, Norbotten. OBS, tårarna sprutar när man hackar denna purfärska lök.', 2, '/images/lars-blankers-pmS8XSz5NU0-unsplash.jpg'),
     ('Gurka', 1, 199, 11, 'Ekologiskt gurka. En saftig gurka men mycket smak, perfekt att pickla. ', 2, '/images/harshal-s-hirve-2GiRcLP_jkI-unsplash.jpg');
