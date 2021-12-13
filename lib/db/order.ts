@@ -4,6 +4,11 @@ import {
   transactionSingleRow,
   run,
 } from "./connection";
+import {
+  ApiInternalError,
+  InconsistentPriceError,
+  InconsistentCartError,
+} from "@lib/api";
 
 export type Order = {
   id: string;
@@ -119,11 +124,28 @@ export type CreateOrderItem = {
   amount: number;
 };
 
+/**
+ * Creates a new order from the customers cart.
+ *
+ * Errors:
+ * - If the subtotal does not match what the client sees in their browser. For example, if
+ *   the price was updated between they went to checkout and actually checked out.
+ * - If the cart the passed in does not match what the database holds. For example, if they
+ *   added items in another tab or on another device.
+ * - Product is out of stock.
+ *
+ * @param customer payment and delivery information.
+ * @param items what items they have in their cart, used for verifying we checkout the correct things.
+ * @param subtotal what they think they should pay for the products.
+ * @returns the order id.
+ */
 export const createOrder = async (
+  userId: string,
   customer: CustomerInfo,
   items: CreateOrderItem[],
   subtotal: number
 ): Promise<string | undefined> => {
+  // Creates a new order, returning the generated order id.
   const createOrderSql = `
   INSERT INTO orders (
     user_id,
@@ -138,6 +160,7 @@ export const createOrder = async (
   RETURNING id;
   `;
 
+  // Fills the order with products from the cart. Returns what the database found for the cart.
   const createOrderItemSql = `
   INSERT INTO order_products (
     order_id,
@@ -148,13 +171,34 @@ export const createOrder = async (
   SELECT $1 as order_id,
          p.id as product_id,
          p.price as price,
-         $3 as quantity
-  FROM products AS p
-  WHERE
-    p.id = $2
-  RETURNING (price * $3) AS price;
+         c.quantity as quantity
+  FROM cart AS c
+    JOIN products AS p on p.id = c.product_id
+  WHERE c.user_id = $2
+  RETURNING product_id AS id,
+            price,
+            quantity;
+  `;
+  type CreateOrderDB = {
+    id: string;
+    price: number;
+    quantity: number;
+  };
+
+  // Update product stock.
+  const updateStockSql = `
+  UPDATE products
+  SET quantity = products.quantity - c.quantity
+  FROM (
+  	SELECT cart.product_id,
+	       cart.quantity
+	FROM cart
+	WHERE user_id = $1
+  ) AS c
+  WHERE products.id = c.product_id
   `;
 
+  // Remove cart.
   const removeCartItemsSql = `
   DELETE FROM cart
   WHERE
@@ -181,23 +225,41 @@ export const createOrder = async (
       orderId = createOrderResponse.rows[0].id;
     }
 
-    // Add all the products contained in the order.
-    // This can probably be done in a single query, but let's keep it simpler.
-    let total = 0;
-    for (let item of items) {
-      const res = await client.query(createOrderItemSql, [
-        orderId,
-        item.id,
-        item.amount,
-      ]);
-      if (res.rows.length > 0) {
-        total += parseInt(res.rows[0].price);
+    // Add all products from the customer's cart.
+    const res = await client.query<CreateOrderDB>(createOrderItemSql, [
+      orderId,
+      userId,
+    ]);
+    console.log("Result: ", res);
+    if (res.rows.length == 0) {
+      throw ApiInternalError();
+    }
+
+    let clientCart: Record<string, CreateOrderItem> = {};
+    for (const cart of items) {
+      clientCart[cart.id] = cart;
+    }
+
+    // Check that both the products in the cart matches client side (1) and that the price matches (2).
+    if (items.length != res.rows.length) {
+      // Different amount of products on client side & server side carts.
+      throw InconsistentCartError();
+    }
+    let actualSubtotal = 0;
+    for (const cart of res.rows) {
+      if (clientCart[cart.id] === undefined) {
+        // Does not exist in the client side cart.
+        throw InconsistentCartError();
       }
+      actualSubtotal += cart.price * cart.quantity;
     }
-    if (subtotal != total) {
+    if (subtotal != actualSubtotal) {
       // Price mismatch from what we want to charge the customer, compared to what they saw in the client.
-      throw Error("price mismatch");
+      throw InconsistentPriceError();
     }
+
+    // Update product stock.
+    await client.query(updateStockSql, [userId]);
 
     // Remove these products from the cart. Let's clear the entire cart removing items that
     // are not necessarily in the order. An alternative could be to only remove items we put
