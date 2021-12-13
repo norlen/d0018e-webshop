@@ -5,6 +5,8 @@ export type Producer = {
   name: string;
   image_url: string;
   description: string;
+  location: string;
+  contact: string;
 };
 
 export const getProducerById = async (
@@ -14,7 +16,9 @@ export const getProducerById = async (
   SELECT p.id,
          p.name,
          p.image_url,
-         p.description
+         p.description,
+         p.location,
+         p.contact
   FROM Producer AS p
   WHERE p.id=$1;`;
   return await getSingleRow(sql, [id]);
@@ -25,7 +29,9 @@ export const getProducersAll = async () => {
     SELECT p.id,
            p.name,
            p.image_url,
-          p.description
+           p.description,
+           p.location,
+           p.contact
     FROM Producer AS p;
     `;
   return await getMultipleRows(sql);
