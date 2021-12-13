@@ -13,14 +13,15 @@ export const getProducerById = async (
   id: string
 ): Promise<Producer | undefined> => {
   const sql = `
-  SELECT p.id,
-         p.name,
-         p.image_url,
-         p.description,
-         p.location,
-         p.contact
-  FROM Producer AS p
-  WHERE p.id=$1;`;
+    SELECT p.id,
+          p.name,
+          p.image_url,
+          p.description,
+          p.location,
+          p.contact
+    FROM producer AS p
+    WHERE p.id = $1;
+  `;
   return await getSingleRow(sql, [id]);
 };
 
@@ -32,7 +33,8 @@ export const getProducersAll = async () => {
            p.description,
            p.location,
            p.contact
-    FROM Producer AS p;
-    `;
+    FROM producer AS p
+    ORDER BY id;
+  `;
   return await getMultipleRows(sql);
 };
