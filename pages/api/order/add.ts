@@ -63,7 +63,7 @@ const orderAddRoute = async (
       address: fullAddress,
     };
 
-    const orderId = await createOrder(customer, cart, subtotal);
+    const orderId = await createOrder(userId, customer, cart, subtotal);
     if (orderId === undefined) {
       throw ApiInternalError();
     }

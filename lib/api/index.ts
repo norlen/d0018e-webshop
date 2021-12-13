@@ -68,3 +68,14 @@ export const UserAlreadyExistsError = () =>
     errorCodes.USER_ALREADY_EXISTS,
     "user with that email already exists"
   );
+
+export const InconsistentCartError = () => {
+  new ApiError(
+    errorCodes.INCONSISTENT_CART,
+    "cart is not consistent between client and server"
+  );
+};
+
+export const InconsistentPriceError = () => {
+  new ApiError(errorCodes.INCONSISTENT_PRICE, "prices have been updated");
+};

@@ -35,6 +35,8 @@ const CheckoutPage: NextPage = () => {
     .map((i) => i.price * i.amount)
     .reduce((acc, v) => acc + v, 0);
 
+  const canSubmit = isValid && cart && cart.length > 0;
+
   const onSubmit = handleSubmit(async (data) => {
     const cartItems = cart.map((c) => ({ id: c.id, amount: c.amount }));
 
@@ -261,7 +263,7 @@ const CheckoutPage: NextPage = () => {
               </div>
               <div className="border-t border-gray-200 py-4">
                 <Button
-                  disabled={!isValid}
+                  disabled={!canSubmit}
                   text="Skapa order"
                   loadingText="Skapar order..."
                   loading={loading}
