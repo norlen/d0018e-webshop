@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 import CartToast from "@components/cart/cartToast";
 import { CartItem, Product } from "@lib/db";
 import { Button } from "@components/common";
+import { useState } from "react";
 
 type Props = {
   product: Product;
@@ -41,6 +42,13 @@ const CustomerBuyButton = ({
   const { error, addToCart } = useAddToCart();
 
   const addProduct = async (amount: number) => {
+    const currentAmount = cartItems[product.id]?.amount || 0;
+    if (currentAmount + amount > product.quantity) {
+      toast.error("ojoj nu har du tömt lagersaldot", {
+        duration: 1000,
+      });
+      return;
+    }
     // Optmistically update the cart, assume the call succeeds. And don't revalidate.
     let data: CartItem[];
     if (cartItems[product.id]) {
