@@ -7,7 +7,11 @@ CREATE TABLE products (
     description     TEXT    NOT NULL,
     producer_id     INT     NOT NULL,
     image_url       TEXT    NOT NULL,
+    isDeleted       INT     NOT NULL DEFAULT 0;
     
     FOREIGN KEY (category_id) REFERENCES category(id),
     FOREIGN KEY (producer_id) REFERENCES producer(id)
 );
+
+
+    

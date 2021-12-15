@@ -20,8 +20,9 @@ export const getCartByUserId = async (id: string): Promise<CartItem[]> => {
          pr.name AS producer,
          c.name AS category,
          p.image_url,
-         cart.quantity AS amount,
-         created_at
+         created_at,
+         p.isDeleted,
+         cart.quantity AS amount
   FROM cart
     INNER JOIN products AS p ON cart.product_id = p.id
     INNER JOIN category AS c ON p.category_id = c.id

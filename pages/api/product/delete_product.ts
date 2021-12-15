@@ -29,11 +29,7 @@ const productDeleteRoute = async (
 
     const { id } = await schema.validateAsync(req.body);
 
-    const success = await removeProduct(id);
-    if (!success) {
-      throw ApiInternalError();
-    }
-
+    await removeProduct(id);
     res.status(200).json({ success: true });
   } catch (error) {
     writeErrorResponse(res, error as Error);
