@@ -1,19 +1,21 @@
 import Image from "next/image";
 import Link from "next/link";
-import { CartRequest } from "@lib/hooks/useCart";
+import { useCart } from "@lib/hooks";
 import { useRemoveFromCart } from "@lib/hooks";
 import { CartItem } from "@lib/db";
-import { KeyedMutator } from "swr";
 import toast from "react-hot-toast";
+import StockStatus from "@components/products/stockStatus";
+import { getStock } from "@lib/util";
 
 type Props = {
   item: CartItem;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  mutateCart: KeyedMutator<CartRequest>;
 };
 
-const CartItem = ({ item, setOpen, mutateCart }: Props) => {
+const CartItem = ({ item, setOpen }: Props) => {
+  const { mutateCart } = useCart();
   const { loading, error, removeFromCart } = useRemoveFromCart();
+  const [amount, stock] = getStock(item.quantity);
 
   const removeItem = async (productId: string) => {
     const result = await removeFromCart({ productId });
@@ -39,17 +41,23 @@ const CartItem = ({ item, setOpen, mutateCart }: Props) => {
       </div>
 
       <div className="ml-4 flex-1 flex flex-col">
-        <div>
-          <div className="flex justify-between text-base font-medium text-gray-900">
-            <h3>
-              <Link href={`/produkt/${item.id}`}>
-                <a onClick={() => setOpen(false)}>{item.name}</a>
-              </Link>
-            </h3>
+        <div className="flex justify-between">
+          <div>
+            <div className="flex justify-between text-base font-medium text-gray-900">
+              <h3>
+                <Link href={`/produkt/${item.id}`}>
+                  <a onClick={() => setOpen(false)}>{item.name}</a>
+                </Link>
+              </h3>
+            </div>
+            <p className="text-gray-500">{item.amount} kg</p>
+            <p className="text-gray-500">
+              Totalt {item.amount * item.price} kr
+            </p>
+          </div>
+          <div className="flex flex-col">
             <p className="">{item.price} kr/kg</p>
           </div>
-          <p className="text-gray-500">Antal {item.amount}</p>
-          <p className="text-gray-500">Totalt {item.amount * item.price} kr</p>
         </div>
         <div className="flex-1 flex items-end justify-between text-sm">
           <button
@@ -61,6 +69,10 @@ const CartItem = ({ item, setOpen, mutateCart }: Props) => {
           >
             {loading ? "Tar bort..." : "Ta bort"}
           </button>
+          <div className="flex items-center">
+            <div className="mt-2 mr-1 ">Lagersaldo:</div>
+            <StockStatus amount={amount} text={stock} className="mt-0.5" />
+          </div>
         </div>
       </div>
     </>

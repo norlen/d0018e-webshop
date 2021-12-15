@@ -1,13 +1,11 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 
-import { useCart, useRemoveFromCart, useAddOrder } from "@lib/hooks";
-import { CartItem } from "@lib/db";
+import { useCart, useAddOrder } from "@lib/hooks";
 import { classNames } from "@lib/util";
+import CartItem2 from "@components/cart/cartItem";
 
 import { Button, Error, InputError } from "@components/common";
 
@@ -251,7 +249,7 @@ const CheckoutPage: NextPage = () => {
               <div className="divide-y divide-gray-200">
                 {cart.map((item) => (
                   <li key={item.id} className="py-6 flex">
-                    <CartItem item={item} />
+                    <CartItem2 item={item} setOpen={() => {}} />
                   </li>
                 ))}
               </div>
@@ -274,60 +272,6 @@ const CheckoutPage: NextPage = () => {
           </div>
         </div>
       </main>
-    </>
-  );
-};
-
-type CartItemProps = {
-  item: CartItem;
-};
-
-const CartItem = ({ item }: CartItemProps) => {
-  const { mutateCart } = useCart();
-  const { loading, error, removeFromCart } = useRemoveFromCart();
-
-  const removeProduct = async (productId: string) => {
-    await removeFromCart({ productId });
-    await mutateCart();
-  };
-
-  return (
-    <>
-      <div className="flex-shrink-0 w-24 h-24 border border-gray-200 rounded-md overflow-hidden">
-        <Image
-          width={96}
-          height={96}
-          src={item.image_url}
-          alt={item.name}
-          className="w-full h-full object-center object-cover"
-        />
-      </div>
-
-      <div className="ml-4 flex-1 flex flex-col">
-        <div>
-          <div className="flex justify-between text-base font-medium text-gray-900">
-            <h3>
-              <Link href={`/produkt/${item.id}`}>
-                <a>{item.name}</a>
-              </Link>
-            </h3>
-            <p className="">{item.price} kr/kg</p>
-          </div>
-          <p className="text-gray-500">Antal {item.amount}</p>
-          <p className="text-gray-500">Totalt {item.amount * item.price} kr</p>
-        </div>
-        <div className="flex-1 flex items-end justify-between text-sm">
-          <button
-            type="button"
-            className={`font-medium text-green-500 hover:text-green-700 ${
-              loading ? "disabled opacity-50 hover:text-green-500" : ""
-            }`}
-            onClick={() => removeProduct(item.id)}
-          >
-            {loading ? "Tar bort..." : "Ta bort"}
-          </button>
-        </div>
-      </div>
     </>
   );
 };

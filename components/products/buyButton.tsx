@@ -6,7 +6,6 @@ import toast from "react-hot-toast";
 import CartToast from "@components/cart/cartToast";
 import { CartItem, Product } from "@lib/db";
 import { Button } from "@components/common";
-import { useState } from "react";
 
 type Props = {
   product: Product;
@@ -49,6 +48,7 @@ const CustomerBuyButton = ({
       });
       return;
     }
+
     // Optmistically update the cart, assume the call succeeds. And don't revalidate.
     let data: CartItem[];
     if (cartItems[product.id]) {
