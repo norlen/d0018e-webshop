@@ -33,14 +33,15 @@ export const run = async <T>(f: (client: Client) => Promise<T>) => {
 export const getSingleRow = async <T>(
   sql: string,
   args: string[] | undefined = undefined
-): Promise<T> => {
-  return await run<T>(async (client) => {
+): Promise<T | undefined> => {
+  let result = undefined;
+  await run(async (client) => {
     const res = await client.query(sql, args);
     if (res.rows.length > 0) {
-      return res.rows[0];
+      result = res.rows[0];
     }
-    throw ApiInternalError();
   });
+  return result;
 };
 
 export const getMultipleRows = async <T>(

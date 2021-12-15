@@ -26,7 +26,7 @@ export const addUser = async (
   name: string,
   email: string,
   password: string
-): Promise<undefined> => {
+): Promise<string | undefined> => {
   const sql = `
   INSERT INTO users (
     name,

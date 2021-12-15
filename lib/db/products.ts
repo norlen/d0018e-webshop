@@ -104,7 +104,7 @@ export const updateProduct = async (
 
 export const getProductById = async (
   id: string
-): Promise<Product & { isdeleted: boolean }> => {
+): Promise<(Product & { isdeleted: boolean }) | undefined> => {
   const sql = `
   SELECT p.id,
          p.name,
