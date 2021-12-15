@@ -23,6 +23,8 @@ const ProductC = ({ product }: Props) => {
     return <EditPage product={product} />;
   }
 
+  product.isdeleted = true;
+
   return (
     <>
       {product.isdeleted && (
@@ -73,29 +75,42 @@ const ProductC = ({ product }: Props) => {
                 <span className="font-medium">{product.price} kr/kg</span>
               </div>
               <div className="flex flex-col ml-8">
-                <span className="text-xs text-green-500">Lagersaldo</span>
-                <span className="font-medium -mt-2">
-                  <StockStatus amount={amount} text={stock} className="mt-1" />
-                </span>
+                {!product.isdeleted && (
+                  <>
+                    <span className="text-xs text-green-500">Lagersaldo</span>
+                    <span className="font-medium -mt-2">
+                      <StockStatus
+                        amount={amount}
+                        text={stock}
+                        className="mt-1"
+                      />
+                    </span>
+                  </>
+                )}
               </div>
             </div>
-            <div className="flex gap-4">
-              <div className="flex flex-col w-12">
-                <span className="text-xs text-green-500">Antal</span>
-                <input
-                  id="amount"
-                  type="number"
-                  className=""
-                  value={buyAmount}
-                  onChange={(e) => {
-                    const value = parseInt(e.target.value);
-                    const set = Math.max(1, Math.min(value, product.quantity));
-                    setBuyAmount(set);
-                  }}
-                />
+            {!product.isdeleted && (
+              <div className="flex gap-4">
+                <div className="flex flex-col w-12">
+                  <span className="text-xs text-green-500">Antal</span>
+                  <input
+                    id="amount"
+                    type="number"
+                    className=""
+                    value={buyAmount}
+                    onChange={(e) => {
+                      const value = parseInt(e.target.value);
+                      const set = Math.max(
+                        1,
+                        Math.min(value, product.quantity)
+                      );
+                      setBuyAmount(set);
+                    }}
+                  />
+                </div>
+                <BuyButton product={product} user={user} amount={buyAmount} />
               </div>
-              <BuyButton product={product} user={user} amount={buyAmount} />
-            </div>
+            )}
           </div>
         </div>
       </div>
