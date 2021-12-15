@@ -7,7 +7,7 @@ import ProductComponent from "@components/products/product";
 import ReviewComponent from "@components/reviews/product-reviews";
 
 type StaticProps = {
-  product: Product;
+  product: Product & { isdeleted: boolean };
 };
 
 const ProductPage: NextPage<StaticProps> = ({ product }) => {
