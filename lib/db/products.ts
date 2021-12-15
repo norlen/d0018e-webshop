@@ -206,14 +206,14 @@ export const searchProducts = async (query: string) => {
          p.image_url,
          c.name as category,
          pr.name as producer,
-         ts_rank_cd(p.document_tokens, query) AS rank
+         ts_rank_cd(p.search_data, query) AS rank
   FROM
     products AS p
       INNER JOIN category AS c on c.id = p.category_id
       INNER JOIN producer AS pr on pr.id = p.producer_id,
     to_tsquery($1) AS query
   WHERE
-    p.document_tokens @@ query
+    p.search_data @@ query
   AND
     p.isDeleted = 0
   ORDER BY rank DESC

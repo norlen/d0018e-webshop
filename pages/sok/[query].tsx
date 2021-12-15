@@ -21,6 +21,16 @@ const ProductPage: NextPage<StaticProps> = ({ query, products }) => {
       </Head>
       <main className="lg:px-12 py-4 lg:py-8">
         <div className="flex flex-wrap gap-10 justify-center">
+          {products.length === 0 && (
+            <p className="bg-white rounded-lg border-green-300 border py-2 px-4 max-w-md">
+              Vi har tyvärr inte några resultat för den här sökningen. Men
+              kontakta oss gärna på{" "}
+              <a href="mailto:kontakt@sebbeseko.se" className="text-green-500">
+                kontakt@sebbeseko.se
+              </a>{" "}
+              om det är något du saknar!
+            </p>
+          )}
           {products.map((product) => {
             return <ProductSmall key={product.id} product={product} />;
           })}
@@ -45,11 +55,13 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
   try {
     const products = await searchProducts(query);
+    console.log(products);
     return {
       props: { query, products },
       revalidate: 5,
     };
   } catch (error) {
+    console.log("sok", error);
     return { notFound: true };
   }
 };
