@@ -77,14 +77,14 @@ const Producenter: NextPage<StaticProps> = ({ producers }) => {
 export default Producenter;
 
 export const getStaticProps: GetStaticProps = async () => {
-  const producers = await getProducersAll();
-  // If we cannot fetch these (i.e. at build time) then skip.
-  if (producers.length === 0) {
+  try {
+    const producers = await getProducersAll();
+
+    return {
+      props: { producers },
+      revalidate: 5,
+    };
+  } catch (error) {
     return { notFound: true };
   }
-
-  return {
-    props: { producers },
-    revalidate: 60,
-  };
 };

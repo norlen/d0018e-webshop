@@ -9,7 +9,7 @@ import CartItem from "./cartItem";
 
 const Cart = () => {
   const [open, setOpen] = useState(false);
-  const { cart, mutateCart } = useCart();
+  const { cart } = useCart();
 
   return (
     <div className="">
@@ -78,11 +78,7 @@ const Cart = () => {
                           >
                             {cart.map((product) => (
                               <li key={product.name} className="py-6 flex">
-                                <CartItem
-                                  item={product}
-                                  setOpen={setOpen}
-                                  mutateCart={mutateCart}
-                                />
+                                <CartItem item={product} setOpen={setOpen} />
                               </li>
                             ))}
                           </ul>

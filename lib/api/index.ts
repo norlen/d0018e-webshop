@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { ValidationError } from "joi";
 import * as errorCodes from "@lib/errorCodes";
+import { DatabaseError } from "pg";
 
 export type ApiResponse<T> = {
   success: boolean;
@@ -43,6 +44,8 @@ export const writeErrorResponse = <T>(
     res.status(400).json(createErrorResponse(400, error.message));
   } else if (error instanceof ApiError) {
     res.status(403).json((error as ApiError).createErrorResponse());
+  } else if (error instanceof DatabaseError) {
+    res.status(500).json(createErrorResponse(500, "internal server error"));
   } else {
     res.status(500).json(createErrorResponse(500, "internal server error"));
   }
@@ -69,13 +72,14 @@ export const UserAlreadyExistsError = () =>
     "user with that email already exists"
   );
 
-export const InconsistentCartError = () => {
+export const InconsistentCartError = () =>
   new ApiError(
     errorCodes.INCONSISTENT_CART,
     "cart is not consistent between client and server"
   );
-};
 
-export const InconsistentPriceError = () => {
+export const InconsistentPriceError = () =>
   new ApiError(errorCodes.INCONSISTENT_PRICE, "prices have been updated");
-};
+
+export const NegativeStockError = () =>
+  new ApiError(errorCodes.NEGATIVE_STOCK, "stock cannot be negative");

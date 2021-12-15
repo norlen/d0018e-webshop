@@ -31,11 +31,14 @@ const Home: NextPage<StaticProps> = ({ products }) => {
 };
 
 export const getStaticProps: GetStaticProps = async () => {
-  const products = await getProductsAll();
+  let products: Product[] = [];
+  try {
+    products = await getProductsAll();
+  } catch (error) {}
 
   return {
     props: { products },
-    revalidate: 60,
+    revalidate: 5,
   };
 };
 

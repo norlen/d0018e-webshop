@@ -3,6 +3,7 @@ export const USER_ALREADY_EXISTS = 2;
 export const ADMIN_REQUIRED = 3;
 export const INCONSISTENT_CART = 4;
 export const INCONSISTENT_PRICE = 5;
+export const NEGATIVE_STOCK = 6;
 
 export const VALIDATION_ERROR = 400;
 export const INTERNAL_ERROR = 500;
@@ -21,6 +22,8 @@ export const mapError = (code: number, message: string): string => {
       return "Kundvagnen har modifierats, ladda om sidan för att se nya ändringar";
     case INCONSISTENT_PRICE:
       return "Priser på produkter har uppdaterats sedan du började, vänligen ladda om sidan";
+    case NEGATIVE_STOCK:
+      return "En av produkterna har tyvärr tagit slut, vänligen uppdatera sidan";
     case VALIDATION_ERROR:
       return message;
   }

@@ -170,18 +170,22 @@ const AddProductPage: NextPage<StaticProps> = ({
 };
 
 export const getStaticProps: GetStaticProps = async () => {
-  const categories = await getCategoriesAll();
-  const producers = await getProducersAll();
+  try {
+    const categories = await getCategoriesAll();
+    const producers = await getProducersAll();
 
-  // If we cannot fetch these (i.e. at build time) then skip.
-  if (categories.length === 0 || producers.length === 0) {
+    // If we cannot fetch these (i.e. at build time) then skip.
+    if (categories.length === 0 || producers.length === 0) {
+      return { notFound: true };
+    }
+
+    return {
+      props: { categories, producers },
+      revalidate: 5,
+    };
+  } catch (error) {
     return { notFound: true };
   }
-
-  return {
-    props: { categories, producers },
-    revalidate: 120,
-  };
 };
 
 export default AddProductPage;

@@ -8,7 +8,9 @@ import {
   ApiInternalError,
   InconsistentPriceError,
   InconsistentCartError,
+  NegativeStockError,
 } from "@lib/api";
+import { DatabaseError } from "pg";
 
 export type Order = {
   id: string;
@@ -257,8 +259,20 @@ export const createOrder = async (
       throw InconsistentPriceError();
     }
 
-    // Update product stock.
-    await client.query(updateStockSql, [userId]);
+    try {
+      // Update product stock.
+      await client.query(updateStockSql, [userId]);
+    } catch (error) {
+      if (error instanceof DatabaseError) {
+        const err = error as DatabaseError;
+        // Check for negative stock, if so give a nice error to the user.
+        if (err.constraint && err.constraint === "quantity_not_negative") {
+          throw NegativeStockError();
+        }
+      }
+      // Otherwise, just rethrow.
+      throw error;
+    }
 
     // Remove these products from the cart. Let's clear the entire cart removing items that
     // are not necessarily in the order. An alternative could be to only remove items we put

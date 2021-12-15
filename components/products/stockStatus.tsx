@@ -1,5 +1,4 @@
 import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/outline";
-import { useCart } from "@lib/hooks";
 import { classNames } from "@lib/util";
 
 type Props = {

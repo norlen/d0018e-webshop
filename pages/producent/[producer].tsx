@@ -83,21 +83,25 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     return { notFound: true };
   }
 
-  let producer = await getProducerById(params.producer);
-  let products = await getProductsByProducerId(params.producer);
+  try {
+    let producer = await getProducerById(params.producer);
+    let products = await getProductsByProducerId(params.producer);
 
-  // The producer might not have any products for sale
-  if (products.length === 0) {
-    products = [];
-  }
-  if (producer === undefined) {
+    // The producer might not have any products for sale
+    if (products.length === 0) {
+      products = [];
+    }
+    if (producer === undefined) {
+      return { notFound: true };
+    }
+
+    return {
+      props: { producer, products },
+      revalidate: 5,
+    };
+  } catch (error) {
     return { notFound: true };
   }
-
-  return {
-    props: { producer, products },
-    revalidate: 60,
-  };
 };
 
 export default ProducerPage;

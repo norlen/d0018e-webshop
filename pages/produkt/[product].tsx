@@ -38,15 +38,19 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     return { notFound: true };
   }
 
-  let product = await getProductById(params.product);
-  if (product === undefined) {
+  try {
+    let product = await getProductById(params.product);
+    if (product === undefined) {
+      return { notFound: true };
+    }
+
+    return {
+      props: { product },
+      revalidate: 5,
+    };
+  } catch (error) {
     return { notFound: true };
   }
-
-  return {
-    props: { product },
-    revalidate: 60,
-  };
 };
 
 export default ProductPage;
