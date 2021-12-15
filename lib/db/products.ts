@@ -1,4 +1,10 @@
-import { getSingleRow, getMultipleRows, run } from "./connection";
+import error from "next/error";
+import {
+  getSingleRow,
+  getMultipleRows,
+  run,
+  transactionSingleRow,
+} from "./connection";
 
 export type Product = {
   id: string;
@@ -50,19 +56,19 @@ export const addProduct = async (
 
 // returns boolean to indicate if the delete was made or not.
 export const removeProduct = async (id: string) => {
-  const sql = `
-    DELETE FROM Products
-    WHERE id = $1
-    RETURNING id;
+  const sqlSoftDelete = `
+    UPDATE products
+    SET isDeleted = 1
+    WHERE id = $1;
   `;
-  let successfullDelete: boolean = false;
-  await run(async (client) => {
-    const res = await client.query(sql, [id]);
-    if (res.rows[0] != undefined) {
-      successfullDelete = true;
-    }
+  const sqlDeleteFromCart = `
+    DELETE FROM Cart
+    WHERE product_id = $1;
+  `;
+  await transactionSingleRow<void>(async (client) => {
+    await client.query(sqlSoftDelete, [id]);
+    await client.query(sqlDeleteFromCart, [id]);
   });
-  return successfullDelete;
 };
 
 // returns boolean to indicate if an update was made or not.
@@ -116,7 +122,8 @@ export const getProductById = async (id: string): Promise<Product> => {
       FROM review
       WHERE review.product_id = $1
     ) AS r
-  WHERE p.id = $1;`;
+  WHERE p.id = $1 
+  AND p.isDeleted = 0;`;
 
   return await getSingleRow(sql, [id]);
 };
@@ -137,7 +144,10 @@ export const getProductsByProducerId = async (
   FROM products as p
   JOIN category AS c on c.id = p.category_id
   JOIN producer AS pr on pr.id = p.producer_id
-  WHERE p.producer_id = $1
+  WHERE 
+    p.producer_id = $1 
+  AND 
+    p.isDeleted = 0
   ORDER BY id DESC;`;
   return await getMultipleRows(sql, [producerId]);
 };
@@ -156,6 +166,8 @@ export const getProductsAll = async (): Promise<Product[]> => {
   FROM products as p
     JOIN category AS c on c.id = p.category_id
     JOIN producer AS pr on pr.id = p.producer_id
+  WHERE 
+    p.isDeleted = 0
   ORDER BY id DESC;`;
   return await getMultipleRows(sql);
 };
@@ -177,7 +189,9 @@ export const getProductsByCategory = async (
     JOIN products AS p on p.category_id = c.id
     JOIN producer AS pr on pr.id = p.producer_id
   WHERE
-    c.name = $1
+    c.name = $1 
+    AND 
+    p.isDeleted = 0
   ORDER BY id DESC;`;
   return await getMultipleRows(sql, [category.toLowerCase()]);
 };
@@ -200,6 +214,8 @@ export const searchProducts = async (query: string) => {
     to_tsquery($1) AS query
   WHERE
     p.document_tokens @@ query
+  AND
+    p.isDeleted = 0
   ORDER BY rank DESC
   ;`;
 

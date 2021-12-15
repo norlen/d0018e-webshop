@@ -6,7 +6,6 @@ import React from "react";
 const SelectList = ({ selectedItem, setSelectedItem, list }: any) => {
   return (
     <div className="relative w-full mb-3">
-      <span>Producent</span>
       <Listbox
         value={selectedItem}
         onChange={(e) => setSelectedItem({ name: e.name, id: e.id })}

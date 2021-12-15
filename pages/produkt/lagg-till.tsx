@@ -139,11 +139,13 @@ const AddProductPage: NextPage<StaticProps> = ({
                   onChange={(e) => setImageURL([e.target.value, defaultImage])}
                 />
               </div>
+              <span>Kategori</span>
               <SelectList
                 selectedItem={selectedCategory}
                 setSelectedItem={setSelectedCategory}
                 list={categories}
               />
+              <span>Producent</span>
               <SelectList
                 selectedItem={selectedProducer}
                 setSelectedItem={setSelectedProducer}
