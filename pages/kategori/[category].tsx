@@ -42,12 +42,16 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     return { notFound: true };
   }
 
-  const products = await getProductsByCategory(params.category);
+  try {
+    const products = await getProductsByCategory(params.category);
 
-  return {
-    props: { products },
-    revalidate: 60,
-  };
+    return {
+      props: { products },
+      revalidate: 5,
+    };
+  } catch (error) {
+    return { notFound: true };
+  }
 };
 
 export default Category;

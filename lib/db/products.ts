@@ -96,9 +96,7 @@ export const updateProduct = async (
   return successfulUpdate;
 };
 
-export const getProductById = async (
-  id: string
-): Promise<Product | undefined> => {
+export const getProductById = async (id: string): Promise<Product> => {
   const sql = `
   SELECT p.id,
          p.name,

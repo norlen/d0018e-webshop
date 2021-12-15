@@ -43,11 +43,15 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   }
   const { query } = params;
 
-  const products = await searchProducts(query);
-  return {
-    props: { query, products },
-    revalidate: 5,
-  };
+  try {
+    const products = await searchProducts(query);
+    return {
+      props: { query, products },
+      revalidate: 5,
+    };
+  } catch (error) {
+    return { notFound: true };
+  }
 };
 
 export default ProductPage;
