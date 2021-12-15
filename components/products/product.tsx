@@ -23,8 +23,6 @@ const ProductC = ({ product }: Props) => {
     return <EditPage product={product} />;
   }
 
-  product.isdeleted = true;
-
   return (
     <>
       {product.isdeleted && (
