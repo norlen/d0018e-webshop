@@ -96,7 +96,9 @@ export const updateProduct = async (
   return successfulUpdate;
 };
 
-export const getProductById = async (id: string): Promise<Product> => {
+export const getProductById = async (
+  id: string
+): Promise<Product & { isdeleted: boolean }> => {
   const sql = `
   SELECT p.id,
          p.name,
@@ -107,7 +109,8 @@ export const getProductById = async (id: string): Promise<Product> => {
          p.producer_id as producerId,
          c.name as category,
          pr.name as producer,
-         COALESCE(r.rating, 0) AS rating
+         COALESCE(r.rating, 0) AS rating,
+         isdeleted
   FROM products AS p
     JOIN category AS c on c.id = p.category_id
     JOIN producer AS pr on pr.id = p.producer_id,
