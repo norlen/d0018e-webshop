@@ -92,7 +92,7 @@ const CartItem = ({ item }: OrderItemProps) => {
         <div>
           <div className="flex justify-between text-base font-medium text-gray-900">
             <h3>
-              <Link href={`/produkt/${item.name}`}>
+              <Link href={`/produkt/${item.productid}`}>
                 <a>{item.name}</a>
               </Link>
             </h3>

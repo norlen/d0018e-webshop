@@ -30,6 +30,7 @@ export type OrderItem = {
   price: number;
   amount: number;
   imageurl: string;
+  productid: number;
 };
 
 export const getOrdersByUserId = async (userid: string): Promise<Order[]> => {
@@ -102,7 +103,8 @@ export const getOrderItems = async (orderId: string): Promise<OrderItem[]> => {
          pr.name AS producer,
          o.price,
          o.quantity AS amount,
-         p.image_url AS imageurl
+         p.image_url AS imageurl,
+         o.product_id AS productid
   FROM order_products AS o
     INNER JOIN products AS p ON p.id = o.product_id
     INNER JOIN category AS c ON c.id = p.category_id
