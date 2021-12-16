@@ -25,12 +25,12 @@ const ProductC = ({ product }: Props) => {
 
   return (
     <>
-      {product.isdeleted && (
+      {product.isdeleted ? (
         <div className="my-2 px-4 py-2 text-center border border-green-500 bg-green-300 rounded-lg">
           Den har produkten har tyvärr utgått ur vårt sortiment. Men vi har
           många andra likvärdiga produkter!
         </div>
-      )}
+      ) : null}
       <div className="flex flex-col gap-4 bg-white rounded-lg">
         <div className="w-full h-96 rounded-t-lg overflow-hidden relative">
           <Image
