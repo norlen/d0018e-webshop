@@ -60,7 +60,7 @@ const CustomerBuyButton = ({
         return { ...item, amount: newAmount };
       });
     } else {
-      data = [...cart, { ...product, amount }];
+      data = [...cart, { ...product, amount, isdeleted: false }];
     }
     await mutateCart({ data }, false);
 
