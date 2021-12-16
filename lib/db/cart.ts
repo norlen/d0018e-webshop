@@ -9,6 +9,7 @@ export type CartItem = {
   category: string;
   image_url: string;
   amount: number;
+  isdeleted: boolean;
 };
 
 export const getCartByUserId = async (id: string): Promise<CartItem[]> => {

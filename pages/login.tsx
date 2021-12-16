@@ -25,7 +25,7 @@ const LoginPage: NextPage = () => {
     register,
     handleSubmit,
     formState: { errors, isValid },
-  } = useForm<FormData>({ mode: "onTouched" });
+  } = useForm<FormData>({ mode: "onChange" });
 
   const onSubmit = handleSubmit(async ({ email, password }) => {
     const data = await login({ email, password });

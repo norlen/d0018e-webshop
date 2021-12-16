@@ -22,7 +22,7 @@ const CreateReview = ({ productId, onAddedReview }: Props) => {
     register,
     handleSubmit,
     formState: { errors, isValid },
-  } = useForm<FormData>({ mode: "onTouched" });
+  } = useForm<FormData>({ mode: "onChange" });
 
   const onSubmit = handleSubmit(async ({ comment }) => {
     const result = await addReview({

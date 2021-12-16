@@ -83,3 +83,9 @@ export const InconsistentPriceError = () =>
 
 export const NegativeStockError = () =>
   new ApiError(errorCodes.NEGATIVE_STOCK, "stock cannot be negative");
+
+export const NoProductsError = () =>
+  new ApiError(
+    errorCodes.NO_PRODUCTS_IN_ORDER,
+    "must have products in the order"
+  );

@@ -27,7 +27,7 @@ const CheckoutPage: NextPage = () => {
     register,
     handleSubmit,
     formState: { errors, isValid },
-  } = useForm<FormData>({ mode: "onTouched" });
+  } = useForm<FormData>({ mode: "onChange" });
 
   const subtotal = cart
     .map((i) => i.price * i.amount)

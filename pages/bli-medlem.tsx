@@ -28,7 +28,7 @@ const MemberPage: NextPage = () => {
     register,
     handleSubmit,
     formState: { errors, isValid },
-  } = useForm<FormData>({ mode: "onTouched" });
+  } = useForm<FormData>({ mode: "onChange" });
 
   const onSubmit = handleSubmit(async ({ name, email, password }) => {
     const user = await signup({ name, email, password });

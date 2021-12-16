@@ -70,8 +70,14 @@ const CartItem = ({ item, setOpen }: Props) => {
             {loading ? "Tar bort..." : "Ta bort"}
           </button>
           <div className="flex items-center">
-            <div className="mt-2 mr-1 ">Lagersaldo:</div>
-            <StockStatus amount={amount} text={stock} className="mt-0.5" />
+            {item.isdeleted ? (
+              <div className="text-red-500">Produkten har utgått</div>
+            ) : (
+              <>
+                <div className="mt-2 mr-1 ">Lagersaldo:</div>
+                <StockStatus amount={amount} text={stock} className="mt-0.5" />
+              </>
+            )}
           </div>
         </div>
       </div>

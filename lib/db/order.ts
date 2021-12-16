@@ -5,10 +5,10 @@ import {
   run,
 } from "./connection";
 import {
-  ApiInternalError,
   InconsistentPriceError,
   InconsistentCartError,
   NegativeStockError,
+  NoProductsError,
 } from "@lib/api";
 import { DatabaseError } from "pg";
 
@@ -147,6 +147,9 @@ export const createOrder = async (
   items: CreateOrderItem[],
   subtotal: number
 ): Promise<string | undefined> => {
+  // Don't let them create order with no products.
+  if (items.length === 0) throw NoProductsError();
+
   // Creates a new order, returning the generated order id.
   const createOrderSql = `
   INSERT INTO orders (
@@ -175,7 +178,7 @@ export const createOrder = async (
          p.price as price,
          c.quantity as quantity
   FROM cart AS c
-    JOIN products AS p on p.id = c.product_id
+    JOIN products AS p ON p.id = c.product_id AND p.isdeleted = 0
   WHERE c.user_id = $2
   RETURNING product_id AS id,
             price,
@@ -232,10 +235,6 @@ export const createOrder = async (
       orderId,
       userId,
     ]);
-    if (res.rows.length == 0) {
-      throw ApiInternalError();
-    }
-
     let clientCart: Record<string, CreateOrderItem> = {};
     for (const cart of items) {
       clientCart[cart.id] = cart;
