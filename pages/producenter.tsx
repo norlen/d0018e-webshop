@@ -85,6 +85,7 @@ export const getStaticProps: GetStaticProps = async () => {
       revalidate: 5,
     };
   } catch (error) {
+    console.error("Producer page:", error);
     return { notFound: true };
   }
 };
